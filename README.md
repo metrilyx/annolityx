@@ -40,6 +40,7 @@ To retrieve a list of available types:
     curl http://localhost:9898/api/types
 
 **Response:**
+
 A list of annotation types as JSON objects.
 
     [
@@ -83,6 +84,7 @@ or the same request with a GET body:
 
 
 **Response:**
+
 A list of JSON objects.
 
     [
