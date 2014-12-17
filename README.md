@@ -78,20 +78,24 @@ or the same request with a GET body:
         },
         "types": ["alarm", "release"],
         "start": "2014.11.01-00:00:00"
-    }
+    }'
 
-Response:
+
+**Response:**
+
+The resposne is a list of JSON objects.
 
     [
         {
-          "tags": {"host":"foo"},
-          "type": "alarm",
-          "timestamp": ...,
-          "posted_timestamp": ....,      
-          "data": {.....},
-          "message": ....
-        },
-        ....
+            "tags": {"host":"foo"},
+            "type": "alarm",
+            "timestamp": 1418531584.234390,
+            "posted_timestamp": 1418531584.234390,
+            "data": {
+                "name": "test"
+            },
+            "message": "Some message"
+        }
     ]
 
 | Field | Description | Required | Type |
@@ -104,6 +108,8 @@ Response:
 
 #### Annotating
 To submit an annotation make a POST request to the same endpoint as follows:
+
+**Request:**
 
     curl -XPOST http://localhost:9898/api/annotations -d '{
         "tags": {
@@ -120,7 +126,7 @@ To submit an annotation make a POST request to the same endpoint as follows:
         }
     }
 
-Response:
+**Response:**
 
     {
         "id": "... sha1 sum...",
@@ -142,7 +148,7 @@ Response:
 
 | Field | Description | Example | Required | Type |
 |-------|-------------|---------|----------|------|
-| **timestamp** | Epoch time in **seconds** (UTC).  If not provided the current time is used. | 1408129158 (Aug 15 11:59:22 2014) | **No** | float or string (YYYY.MM.DD-hh:mm:ss) |
+| **timestamp** | Epoch time in **seconds** (UTC).  If not provided the current time is used. | 1408129158 (Aug 15 11:59:22 2014) | No | float or string (YYYY.MM.DD-hh:mm:ss) |
 | **type** | A pre-defined event type.  A list of event types can be found at the /api/types endpoint. | Maintenance | **Yes** | string |
 | **message** | This is the string used when hovering over the event on the graph. | "Scheduled Network Maintenance"| **Yes** | string |
 | **tags** | Any arbitrary tags that can be used later for searching/filtering. | {"host":"foo.bar.com","severity":"Warning"}| **Yes** | dict |
