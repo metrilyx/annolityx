@@ -35,11 +35,12 @@ Each annotation as an associated type used for grouping and categorizing.  The t
 
 To retrieve a list of available types:
 
-Request:
+**Request:**
 
     curl http://localhost:9898/api/types
 
-Response:
+**Response:**
+A list of annotation types as JSON objects.
 
     [
         {
@@ -48,8 +49,6 @@ Response:
             "metadata": {
                 "color": "#ff0000"
             }
-        },{
-            ...
         }
     ]
 
@@ -67,6 +66,8 @@ An annotation schema is layed out as follows:
 #### Querying
 To retrieve annotations a GET request must be made:
 
+**Request:**
+
     curl -XGET "http://localhost:9898/api/annotations?tags=host:foo,dc:dc1&types=alarm,release&start=2014.11.01-00:00:00"
 
 or the same request with a GET body:
@@ -82,8 +83,7 @@ or the same request with a GET body:
 
 
 **Response:**
-
-The resposne is a list of JSON objects.
+A list of JSON objects.
 
     [
         {
