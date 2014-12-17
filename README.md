@@ -127,8 +127,7 @@ To submit an annotation make a POST request to the same endpoint as follows:
                 "time": "2014/12/23-01:00:01",
                 "contact": "admin@foo.bar.org"
             }
-        }
-    '
+        }'
 
 **Response:**
 
