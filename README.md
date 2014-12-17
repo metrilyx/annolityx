@@ -25,13 +25,16 @@ Continue on to the configuration section to customize various components of the 
 
 
 ## Usage
+
 The following enpoints are available:
 
-    /api/annotations (GET, POST)
-    /api/types       (GET)
+* /api/types       (GET)
+* /api/annotations (GET, POST)
 
-### Annotation types
-Each annotation as an associated type used for grouping and categorizing.  The type must exist before an annotation can be use it.
+
+### Annotation types (/api/types)
+
+Each annotation has an associated type used for grouping and categorizing.  The type must exist before an annotation can use it.
 
 To retrieve a list of available types:
 
@@ -53,25 +56,19 @@ A list of annotation types as JSON objects.
         }
     ]
 
-### Annotations
+### Annotations (/api/annotations)
 
-#### Schema
-An annotation schema is layed out as follows:
-
-* posted_timestamp: time in epoch when event was submitted to the system
-* timestamp       : time in epoch when event occurred
-* data            : single level json object with arbitrary user data
-* tags            : single level json object with arbitrary user tags used for filtering and searching
-* message         : user message string
+This endpoint can be use to search and post annotations.
 
 #### Querying
+
 To retrieve annotations a GET request must be made:
 
 **Request:**
 
     curl -XGET "http://localhost:9898/api/annotations?tags=host:foo,dc:dc1&types=alarm,release&start=2014.11.01-00:00:00"
 
-or the same request with a GET body:
+OR the same request with a GET body:
 
     curl -XGET http://localhost:9898/api/annotations -d '{
         "tags": {
@@ -85,7 +82,7 @@ or the same request with a GET body:
 
 **Response:**
 
-A list of JSON objects.
+A list of annotations as JSON objects.
 
     [
         {
@@ -109,7 +106,8 @@ A list of JSON objects.
 
 
 #### Annotating
-To submit an annotation make a POST request to the same endpoint as follows:
+
+To submit an annotation, make a POST request to the same endpoint as follows:
 
 **Request:**
 
@@ -156,3 +154,14 @@ To submit an annotation make a POST request to the same endpoint as follows:
 | **message** | This is the string used when hovering over the event on the graph. | "Scheduled Network Maintenance"| **Yes** | string |
 | **tags** | Any arbitrary tags that can be used later for searching/filtering. | {"host":"foo.bar.com","severity":"Warning"}| **Yes** | dict |
 | **data** | This can be any arbitrary JSON data.  It must be a single level JSON structure. This is the data used as details which are shown when clicking on the event| {"Priority": "P1", "On Call": "Jon Doe", "Contact Email": "Jon.Doe@bar.com" }| No | dict |
+
+
+#### Schema
+
+An annotation schema is layed out as follows:
+
+* **posted_timestamp**: time in epoch when event was submitted to the system
+* **timestamp**       : time in epoch when event occurred
+* **data**            : single level json object with arbitrary user data
+* **tags**            : single level json object with arbitrary user tags used for filtering and searching
+* **message**         : user message string
