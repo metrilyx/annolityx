@@ -113,20 +113,22 @@ To submit an annotation make a POST request to the same endpoint as follows:
 
 **Request:**
 
-    curl -XPOST http://localhost:9898/api/annotations -d '{
-        "tags": {
-            "host": "foo",
-            "dc": "dc1"
-        },
-        "type": "alarm",
-        "message": "Memory usage at 90%",
-        "timestamp": "2014.11.01-00:00:00",
-        "data": {
-            "host": "foo.bar.org",
-            "time": "2014/12/23-01:00:01",
-            "contact": "admin@foo.bar.org"
+    curl -XPOST http://localhost:9898/api/annotations -d '
+        {
+            "tags": {
+                "host": "foo",
+                "dc": "dc1"
+            },
+            "type": "alarm",
+            "message": "Memory usage at 90%",
+            "timestamp": "2014.11.01-00:00:00",
+            "data": {
+                "host": "foo.bar.org",
+                "time": "2014/12/23-01:00:01",
+                "contact": "admin@foo.bar.org"
+            }
         }
-    }
+    '
 
 **Response:**
 
