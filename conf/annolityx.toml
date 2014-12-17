@@ -1,0 +1,20 @@
+[publisher]
+type = "PUB"
+port = 23456
+
+[typestore]
+dbfile = "conf/annotation-types.json"
+
+[datastore]
+type = "elasticsearch"
+host = "localhost"
+port = 9200
+index = "event_annotations"
+mapping_file = "conf/eventannotations-mapping.json"
+
+[http]
+port = 9898
+webroot = "webroot"
+anno_endpoint = "/api/annotations"
+types_endpoint = "/api/types"
+websocket_endpoint = "/data"

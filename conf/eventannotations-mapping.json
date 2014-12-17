@@ -1,0 +1,35 @@
+{
+    "_default_": {
+        "dynamic_templates": [
+            {
+                "ip": {
+                    "match_pattern"     : "regex",
+                    "match"             : "[i|I][p|P]_*addr[ess]{0,1}|ip",
+                    "match_mapping_type": "string",
+                    "mapping"           : {"type": "ip"}
+                }
+            },
+            {
+                "network": {
+                    "match_pattern"     : "regex",
+                    "match"             : "[g|G]ateway.*|[n|N]etwork|[n|N]etmask.*|[s|S]ubnet",
+                    "match_mapping_type": "string",
+                    "mapping"           : {"type": "ip"}
+                }
+            },
+            {
+                "fqdn": {
+                    "match_pattern"     : "regex",
+                    "match"             : "[h|H]ost|[h|H]ostname|[s|S]erver|fqdn|FQDN",
+                    "mapping"           : {"type": "string", "index": "not_analyzed"}
+                }
+            },
+            {
+                "timestamp": {
+                    "match"             : "timestamp",
+                    "mapping"           : {"type": "float"}
+                }
+            }
+        ]
+    }
+}

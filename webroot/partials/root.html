@@ -1,0 +1,40 @@
+<ng-include src="sidePanelHtml"></ng-include>
+<div id="root-container">
+    <ng-include src="pageHeaderHtml"></ng-include>
+    <ng-include src="timeSelectorHtml"></ng-include>
+    <table class="table anno-table" style="margin-bottom:0px;">
+        <tr>
+            <td style="font-weight:bold;vertical-align:middle">
+                <div ng-click="sortAnnoByKey('timestamp')" title="Sort by Time">
+                    <span class="caret"></span>
+                    <span>Time</span>
+                </div>
+            </td>
+            <td id="message-search" title="Search messages">
+                <div class="glyphicon glyphicon-search" style="padding-right:5px;display:inline-block;"></div>
+                <input type="text" placeholder="Message" ng-model="annoMessageSearch">
+            </td>
+            <td style="text-align:center">
+                <div style="font-weight:bold" ng-click="sortAnnoByKey('type')" title="Sort by Type">
+                    <span class="caret"></span>
+                    <span>Type</span>
+                </div>
+            </td>
+            <td class="anno-table-cell tags-cell">
+                <div style="font-weight:bold">Tags</div>
+            </td>
+        </tr>
+        <tr ng-repeat="annotation in annoResults | filter: annoMessageSearch | orderBy:annoSortKey:annoSortReverse | limitTo:maxResults">
+            <td class="anno-table-cell" style="font-size:12px;border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">{{annotation.timestamp|datetimeFromEpoch}}</td>
+            <td class="anno-table-cell" style="font-size:13px;">{{annotation.message}}</td>
+            <td class="anno-table-cell" style="text-align:center">
+                <span class="badge" style="background:{{annoTypesIndex[annotation.type].metadata.color}}">{{annoTypesIndex[annotation.type].name}}</span>
+            </td>
+            <td class="anno-table-cell tags-cell">
+                <div ng-repeat="(atagk, atagv) in annotation.tags" class="anno-tag-kv">
+                    <div class="anno-tag-k">{{atagk}}</div><div class="anno-tag-v">{{atagv}}</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

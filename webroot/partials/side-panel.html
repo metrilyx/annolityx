@@ -1,0 +1,51 @@
+<div id="left-side-pane">
+    <div style="padding: 5px 0;border-bottom:1px solid #595959">
+        <div class="side-pane-header">
+            <span class="glyphicon glyphicon-tasks"></span>
+            <span style="padding:0 5px;">Types :</span>
+        </div>
+        <div style="margin-left:24px;transition:all 0.35s ease" title="Filter by type" ng-model="annoTypesIndex" annotation-types>
+            <div ng-repeat="(annoTypeId, annoType) in annoTypesIndex" ng-switch="annoType.selected" ng-click="annoType.selected=!annoType.selected" class="left-side-anno-type">
+                <span ng-switch-when="true" style="color: {{annoType.metadata.color}}" class="glyphicon glyphicon-adjust pull-right"></span>
+                <span ng-switch-default style="box-shadow: inset 2px 2px rgba(0,0,0,0.085);color: #aaa" class="glyphicon glyphicon-adjust pull-right"></span>
+                <span>{{annoType.name}}</span>
+            </div>
+        </div>
+    </div>
+    <div style="padding-top:10px;padding-bottom:10px;border-top: 1px solid #777;border-bottom:1px solid #595959">
+        <div class="side-pane-header">
+            <span class="glyphicon glyphicon-tags"></span>
+            <span style="padding:0 5px;">Tags :</span>
+        </div>
+        <div style="margin-left:24px;">
+            <div ng-repeat="(annoTagK, annoTagV) in annoFilter.tags" class="input-group input-group-sm transparent dark anno-tag-kv-input">
+                <div class="input-group-addon" style="font-weight:bold">{{annoTagK}}</div>
+                <input type="text" class="form-control" ng-model="annoTagV">
+                <div class="input-group-btn">
+                    <button type="button" ng-click="removeAnnoTag(annoTagK)" class="btn btn-default">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="input-group input-group-sm transparent dark" style="margin-top:5px;margin-bottom:5px;margin-left:24px">
+            <input type="text" class="form-control" tag-key-value ng-model="annoFilter.tags" style="border-bottom: 1px solid #999" placeholder="e.g. host=foo">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-search"></span>
+            </span>
+        </div>
+    </div>
+    <div style="border-top:1px solid #777;">
+        <div style="padding:10px;color: #bbb;" title="No. of results">
+            <select ng-model="maxResults" class="max-results-opts pull-right">
+                <option value="100">100</option>
+                <option value="250">250</option>
+                <option value="500">500</option>
+            </select>
+            <span style="font-weight:bold">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                <span style="padding: 0 5px;">Limit</span>
+            </span>
+        </div>
+    </div>
+</div>

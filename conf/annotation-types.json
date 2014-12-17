@@ -1,0 +1,37 @@
+{
+    "alarm": {
+        "id": "alarm",
+        "name": "Alarm",
+        "metadata": {
+            "color": "#FF755E"
+        }
+    },
+    "release":{
+        "id": "release",
+        "name": "Release",
+        "metadata": {
+            "color": "#55E89F"
+        }
+    },
+    "deployment":{
+        "id": "deployment",
+        "name": "Deployment",
+        "metadata": {
+            "color": "#697FE8"
+        }
+    },
+    "upgrade":{
+        "id": "upgrade",
+        "name": "Upgrade",
+        "metadata": {
+            "color": "#E8B955"
+        }
+    },
+    "other":{
+        "id": "other",
+        "name": "Other",
+        "metadata": {
+            "color": "#AE5CFF"
+        }
+    }
+}

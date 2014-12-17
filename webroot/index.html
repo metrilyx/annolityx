@@ -1,0 +1,30 @@
+<html lang="en">
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="libs/datetimepicker/css/datetimepicker.css">
+
+		<script type="text/javascript" src="libs/jquery/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="libs/bootstrap/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="libs/angularjs/angular.min.js"></script>
+		<script type="text/javascript" src="libs/angularjs/angular-route.min.js"></script>
+		<script type="text/javascript" src="libs/angularjs/angular-resource.min.js"></script>
+
+		<script type="text/javascript" src="libs/datetimepicker/js/moment.min.js"></script>
+		<script type="text/javascript" src="libs/datetimepicker/js/datetimepicker.js"></script>
+
+		<script type="text/javascript" src="app.js"></script>
+		<script type="text/javascript" src="directives.js"></script>
+		<script type="text/javascript" src="factories.js"></script>
+		<script type="text/javascript" src="controllers.js"></script>
+		<script type="text/javascript" src="services.js"></script>
+
+	</head>
+	<body>
+		<div id="stage" ng-app="app" ng-controller="defaultController">
+			<div style="overflow-y:scroll" ng-view></div>
+		</div>
+	</body>
+</html>
