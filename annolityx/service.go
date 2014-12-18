@@ -81,6 +81,7 @@ func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnno
 }
 
 func (e *EventAnnoService) Start() error {
+	e.logger.Warning.Printf("HTTP root directory: %s\n", e.Webroot)
 	http.Handle("/", http.FileServer(http.Dir(e.Webroot)))
 
 	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.wsock)
