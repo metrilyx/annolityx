@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/euforia/annolityx/conf/annolityx.toml"
+var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annolityx.toml"
 
 func Test_LoadConfigFromFile(t *testing.T) {
 	testConfig, err := LoadConfigFromFile(testConfigFile)

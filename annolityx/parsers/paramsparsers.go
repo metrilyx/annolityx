@@ -3,7 +3,7 @@ package parsers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/euforia/annolityx/annolityx/annotations"
+	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"io"
 	"io/ioutil"
 	"net/url"

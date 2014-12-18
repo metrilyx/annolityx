@@ -3,7 +3,7 @@ package datastores
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/euforia/annolityx/annolityx/annotations"
+	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"io/ioutil"
 )
 

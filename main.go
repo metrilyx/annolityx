@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/euforia/annolityx/annolityx/config"
-	"github.com/euforia/annolityx/annolityx/logging"
+	"github.com/metrilyx/annolityx/annolityx"
+	"github.com/metrilyx/annolityx/annolityx/config"
+	"github.com/metrilyx/annolityx/annolityx/logging"
 	"os"
 )
 
@@ -36,7 +37,7 @@ func main() {
 		cfg.Http.Webroot = *webroot
 	}
 
-	annoSvc, err := NewEventAnnoService(cfg, logger)
+	annoSvc, err := annolityx.NewEventAnnoService(cfg, logger)
 	if err != nil {
 		logger.Error.Printf("%s\n", err)
 		os.Exit(1)

@@ -2,15 +2,15 @@ package ess
 
 import (
 	"encoding/json"
-	"github.com/euforia/annolityx/annolityx/annotations"
-	"github.com/euforia/annolityx/annolityx/config"
-	"github.com/euforia/annolityx/annolityx/datastores"
+	"github.com/metrilyx/annolityx/annolityx/annotations"
+	"github.com/metrilyx/annolityx/annolityx/config"
+	"github.com/metrilyx/annolityx/annolityx/datastores"
 	"testing"
 	"time"
 )
 
-var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/euforia/annolityx/conf/annolityx.toml"
-var testTypestoreDbfile string = "/Users/abs/workbench/GoLang/src/github.com/euforia/annolityx/conf/annotation-types.json"
+var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annolityx.toml"
+var testTypestoreDbfile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annotation-types.json"
 
 var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
 var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{}

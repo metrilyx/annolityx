@@ -1,15 +1,15 @@
-package main
+package annolityx
 
 import (
 	"code.google.com/p/go.net/websocket"
 	"encoding/json"
 	"fmt"
-	"github.com/euforia/annolityx/annolityx/annotations"
-	"github.com/euforia/annolityx/annolityx/config"
-	"github.com/euforia/annolityx/annolityx/datastores"
-	"github.com/euforia/annolityx/annolityx/datastores/ess"
-	"github.com/euforia/annolityx/annolityx/logging"
-	"github.com/euforia/annolityx/annolityx/parsers"
+	"github.com/metrilyx/annolityx/annolityx/annotations"
+	"github.com/metrilyx/annolityx/annolityx/config"
+	"github.com/metrilyx/annolityx/annolityx/datastores"
+	"github.com/metrilyx/annolityx/annolityx/datastores/ess"
+	"github.com/metrilyx/annolityx/annolityx/logging"
+	"github.com/metrilyx/annolityx/annolityx/parsers"
 	"io/ioutil"
 	"net/http"
 	"os"

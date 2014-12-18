@@ -2,12 +2,12 @@ package annotations
 
 import (
 	"fmt"
-	"github.com/euforia/annolityx/annolityx/config"
+	"github.com/metrilyx/annolityx/annolityx/config"
 	"testing"
 	"time"
 )
 
-var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/euforia/annolityx/conf/annolityx.toml"
+var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annolityx.toml"
 var testCfg *config.Config = &config.Config{}
 var testSubConnUri string = "tcp://localhost:%d"
 
