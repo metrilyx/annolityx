@@ -156,7 +156,7 @@ To submit an annotation, make a POST request to the same endpoint as follows:
 | **data** | This can be any arbitrary JSON data.  It must be a single level JSON structure. This is the data used as details which are shown when clicking on the event| {"Priority": "P1", "On Call": "Jon Doe", "Contact Email": "Jon.Doe@bar.com" }| No | dict |
 
 
-#### Schema
+### Schema
 
 An annotation schema is layed out as follows:
 
