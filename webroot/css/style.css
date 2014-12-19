@@ -228,7 +228,11 @@ td.anno-table-cell.tags-cell {
 }
 
 select.max-results-opts {
+	text-overflow: '';
+	text-indent: 1px;
+	-moz-appearance:none;
 	-webkit-appearance:none;
+	appearance:none;
 	background: transparent;
 	color: #bbb;
 	border-radius: 2px;

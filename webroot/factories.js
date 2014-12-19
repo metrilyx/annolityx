@@ -94,6 +94,7 @@ var appFactories = angular.module("appFactories", [])
     var TimeWindowManager = function(scope) {
 
         var t = this;
+        var DATE_TIME_FORMAT = "YYYY.MM.DD-HH:mm:ss"
 
         var timeDimension = {
             types: {
@@ -107,18 +108,16 @@ var appFactories = angular.module("appFactories", [])
             if(timeObj.start !== '') {
                 var matches = timeObj.start.match(/(\d+[s|m|h|d|w])-ago/)
                 if(matches) {
-                    //timeDimension.types.relative.unit = matches[2];
-                    //timeDimension.types.relative.value = parseInt(matches[1]);
                     timeDimension.types.relative.start = matches[1];
                     timeDimension.activeType = 'relative';
                 } else {
                     // set absolute
-                    timeDimension.types.absolute.start = new Date($routeParams.start);
+                    timeDimension.types.absolute.start = (moment($routeParams.start, DATE_TIME_FORMAT))._d;
                     timeDimension.activeType = 'absolute';
                     if(timeObj.end) {
                         matches = timeObj.end.match(/(\d+)([s|m|h|d|w])-ago/);
                         if(matches) return
-                        timeDimension.types.absolute.end = new Date($routeParams.end);
+                        timeDimension.types.absolute.end = (moment($routeParams.end, DATE_TIME_FORMAT))._d;
                     }
 
                 }
