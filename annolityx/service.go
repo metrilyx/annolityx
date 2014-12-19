@@ -36,6 +36,7 @@ type EventAnnoService struct {
 	Publisher annotations.IEventAnnotationPublisher
 
 	pubSubPort int64
+	cfg        *config.Config
 	logger     *logging.Logger
 }
 
@@ -44,6 +45,7 @@ func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnno
 		Webroot:    cfg.Http.Webroot,
 		ListenAddr: fmt.Sprintf(":%d", cfg.Http.Port),
 		pubSubPort: cfg.Publisher.Port,
+		cfg:        cfg,
 	}
 	if logger == nil {
 		eas.logger = logging.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
@@ -84,8 +86,11 @@ func (e *EventAnnoService) Start() error {
 	e.logger.Warning.Printf("HTTP root directory: %s\n", e.Webroot)
 	http.Handle("/", http.FileServer(http.Dir(e.Webroot)))
 
-	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.wsock)
+	e.logger.Warning.Printf("Registering WebSocket Endpoint: %s\n", e.Endpoints.wsock)
 	http.Handle(e.Endpoints.wsock, websocket.Handler(e.wsHandler))
+
+	e.logger.Warning.Printf("Registering HTTP Endpoint: /api/config\n")
+	http.HandleFunc("/api/config", e.configHandler)
 
 	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.types)
 	http.HandleFunc(e.Endpoints.types, e.typesHandler)
@@ -126,6 +131,37 @@ func (e *EventAnnoService) checkAnnotateRequest(r *http.Request) (*annotations.E
 		annoReq.Timestamp = float64(time.Now().UnixNano()) / 1000000000
 	}
 	return &annoReq, nil
+}
+
+func (e *EventAnnoService) handleConfigGetRequest(r *http.Request) (interface{}, int) {
+	if e.cfg.Http.WebsocketHostname == "" {
+
+		var err error
+		e.cfg.Http.WebsocketHostname, err = os.Hostname()
+
+		if err != nil {
+			return err, 500
+		}
+	}
+
+	return fmt.Sprintf(`{"websocket": { "url": "ws://%s:%d%s" }}`,
+		e.cfg.Http.WebsocketHostname, e.cfg.Http.Port, e.cfg.Http.WebsocketEndpoint), 200
+}
+
+func (e *EventAnnoService) configHandler(w http.ResponseWriter, r *http.Request) {
+	var resp interface{}
+	var code int
+	switch r.Method {
+	case "GET":
+		resp, code = e.handleConfigGetRequest(r)
+		break
+	default:
+		resp = map[string]string{
+			"error": fmt.Sprintf("Method not supported: %s", r.Method)}
+		code = 501
+		break
+	}
+	e.writeJsonResponse(w, r, resp, code)
 }
 
 func (e *EventAnnoService) handleAnnoGetRequest(r *http.Request) (interface{}, int) {

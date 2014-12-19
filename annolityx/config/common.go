@@ -19,12 +19,12 @@ type TypestoreConfig struct {
 }
 
 type HttpConfig struct {
-	Port         int64  `toml:"port"`
-	Webroot      string `toml:"webroot"`
-	AnnoEndpoint string `toml:"anno_endpoint"`
-	//QueryEndpoint     string `toml:"query_endpoint"`
+	Port              int64  `toml:"port"`
+	Webroot           string `toml:"webroot"`
+	AnnoEndpoint      string `toml:"anno_endpoint"`
 	TypesEndpoint     string `toml:"types_endpoint"`
 	WebsocketEndpoint string `toml:"websocket_endpoint"`
+	WebsocketHostname string `toml:"websocket_hostname"`
 }
 
 type PublisherConfig struct {

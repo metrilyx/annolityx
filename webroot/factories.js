@@ -1,12 +1,12 @@
 var appFactories = angular.module("appFactories", [])
-.factory("WebSocketManager", [ function() {
+.factory("WebSocketManager", [ 'AnnolityxConfig', function(AnnolityxConfig) {
 
     var WebSocketManager = function(cb, messageFilter) {
 
         var t = this;
 
         var wsock;
-        var uri = 'ws://localhost:9898/data';
+        var uri = AnnolityxConfig.websocket.url;
         
         var maxRetries = 3;
         var retryCount = 0;

@@ -14,6 +14,20 @@ var app = angular.module('app', [
 	'appServices'
 ]);
 
+app.provider('AnnolityxConfig', function() {
+	var _config;
+
+	$.get('/api/config', function(rslt) {
+		_config= rslt;
+	});
+	
+	return {
+		$get: function() {
+			return _config;
+		}
+	};
+});
+
 app.config(['$routeProvider',
 	function($routeProvider) {
 		$routeProvider.
