@@ -205,7 +205,7 @@ tr:hover>td.anno-table-cell:first-child {
 	border-left-width: 7px;
 }
 td.anno-table-cell.tags-cell {
-	width: 25%;
+	width: 20%;
 	text-align: right;
 }
 .input-group.transparent >.input-group-btn >.btn.btn-default,
