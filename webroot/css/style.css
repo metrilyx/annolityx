@@ -1,4 +1,3 @@
-
 ul {
     list-style-type: none;
     margin: 0px;
@@ -100,7 +99,7 @@ ul {
 	left: 0;
 	width: 20%;
 	bottom: 0;
-	background: #656565;
+	background: #505050;
 }
 .left-side-anno-type {
 	padding:5px 10px;
