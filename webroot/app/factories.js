@@ -1,4 +1,4 @@
-var appFactories = angular.module("appFactories", [])
+var appFactories = angular.module("app.factories", [])
 .factory("WebSocketManager", [ 'AnnolityxConfig', function(AnnolityxConfig) {
 
     var WebSocketManager = function(cb, messageFilter) {

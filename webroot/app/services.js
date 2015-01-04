@@ -1,4 +1,4 @@
-angular.module('appServices', [])
+angular.module('app.services', [])
 .factory('Authenticator', ['$window', '$http', '$location', function($window, $http, $location) {
 
 	function _sessionIsAuthenticated() {

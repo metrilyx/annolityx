@@ -1,4 +1,4 @@
-angular.module('appControllers', [])
+angular.module('app.controllers', [])
 .controller('rootController', [
 	'$window', '$scope', '$location', 'Authenticator',
 	'EvtAnnoService', 'EventAnnotationTypes', 'WebSocketManager', 'TimeWindowManager', 'AnnoFilterManager',

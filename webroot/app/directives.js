@@ -1,4 +1,4 @@
-angular.module('appDirectives', [])
+angular.module('app.directives', [])
 .directive('appStage', ['$window', function($window) {
 	return {
 		restrict: 'A',
