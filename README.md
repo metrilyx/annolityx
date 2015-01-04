@@ -1,5 +1,5 @@
-annolityx
-=========
+# annolityx
+-----------
 Annolityx allows you to capture and annotate events.  It is designed to integrate with dashboarding engines.
 
 
@@ -157,7 +157,7 @@ To submit an annotation, make a POST request to the same endpoint as follows:
 
 
 ### Schema
-----------
+==========
 
 An annotation schema is layed out as follows:
 
