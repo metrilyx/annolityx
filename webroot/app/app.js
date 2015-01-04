@@ -1,4 +1,12 @@
-/* helper functions */
+/*
+ * Globals
+ */
+var DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/* 
+ * Helper functions 
+ */
 function padTime(val) {
 	if(val < 10) return "0"+val.toString();
 	return val.toString();
@@ -60,18 +68,20 @@ app.config(['$routeProvider',
 	}
 ]);
 
+/* Filters */
 app.filter('objectLength', function() {
 	return function(obj) {
     	return Object.keys(obj).length;
 	};
-}).filter('datetimeFromEpoch', function() {
-	//var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	//var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	
+})
+.filter('datetimeFromEpoch', function() {
 	return function(epoch) {
 		return (new Date(epoch*1000)).toString()
-		//return d.toString();
-		//return padTime(d.getHours())+':'+padTime(d.getMinutes())+':'+padTime(d.getSeconds())+' '+
-		//	days[d.getDay()]+' '+months[d.getMonth()]+' '+padTime(d.getDate())+', '+d.getUTCFullYear();
 	}
+}).
+filter('epochToFormat', function() {
+	var d = new Date(epoch*1000);
+	
+	return padTime(d.getHours())+':'+padTime(d.getMinutes())+':'+padTime(d.getSeconds())+' '+
+		DAYS[d.getDay()]+' '+MONTHS[d.getMonth()]+' '+padTime(d.getDate())+', '+d.getUTCFullYear();
 });

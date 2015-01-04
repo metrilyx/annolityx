@@ -32,7 +32,7 @@ The following enpoints are available:
 * /api/annotations (GET, POST)
 
 
-### Annotation types (/api/types)
+### Annotation types ( /api/types )
 
 Each annotation has an associated type used for grouping and categorizing.  The type must exist before an annotation can use it.
 
@@ -56,7 +56,7 @@ A list of annotation types as JSON objects.
         }
     ]
 
-### Annotations (/api/annotations)
+### Annotations ( /api/annotations )
 
 This endpoint can be use to search and post annotations.
 
