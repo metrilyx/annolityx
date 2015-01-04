@@ -95,8 +95,12 @@ angular.module('app.controllers', [])
 			$scope.sortAnnoByKey = sortAnnoByKey;
 			$scope.removeAnnoTag = removeAnnoTag;
 
-			webSockMgr = new WebSocketManager(onWebsockData, $scope.annoFilter);
-			webSockMgr.connect();
+			/* TODO: only if relative time */
+			if($scope.timeDimension.activeType == 'relative') {
+				console.log("Live events enabled.");
+				webSockMgr = new WebSocketManager(onWebsockData, $scope.annoFilter);
+				webSockMgr.connect();
+			}
 
 			EventAnnotationTypes.list(function(data) {
 				$scope.annoTypesIndex = indexAnnoTypesList(data);

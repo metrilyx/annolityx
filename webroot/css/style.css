@@ -145,9 +145,14 @@ table.table.anno-table>tbody>tr:first-child>td {
 	border-top: none;
 	vertical-align: middle;
 }
+td#message-search {
+	transition: all 0.5s ease;
+}
 #message-search {
 	padding: 0;
 	text-align: center;
+}
+#message-search:hover {
 	border-bottom: 1px solid #888;
 }
 #message-search > div {

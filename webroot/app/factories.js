@@ -19,7 +19,7 @@ var appFactories = angular.module("app.factories", [])
         }
 
         function onWsOpen(evt) {
-            console.log('Connection open', evt);
+            console.log("Connection open. Extentions: [ '" + wsock.extensions + "' ]");
             retryCount = 0;
             sendMessage(messageFilter);
         }
