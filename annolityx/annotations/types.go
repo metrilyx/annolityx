@@ -19,8 +19,12 @@ type EventAnnoType struct {
 }
 
 func NewEventAnnoType(id, name string) *EventAnnoType {
-	return &EventAnnoType{id, name, map[string]interface{}{
-		"priority": TYPE_META_DEFAULT_PRIORITY,
-		"color":    TYPE_META_DEFAULT_COLOR,
-	}}
+	return &EventAnnoType{
+		Id:   id,
+		Name: name,
+		Metadata: map[string]interface{}{
+			"priority": TYPE_META_DEFAULT_PRIORITY,
+			"color":    TYPE_META_DEFAULT_COLOR,
+		},
+	}
 }

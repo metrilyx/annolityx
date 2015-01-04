@@ -94,7 +94,6 @@ func (e *EventAnnoService) Start() error {
 
 	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.types)
 	http.HandleFunc(e.Endpoints.types, e.typesHandler)
-	//http.HandleFunc(fmt.Sprintf("%s/", e.Endpoints.types), e.typesHandler)
 
 	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.anno)
 	http.HandleFunc(e.Endpoints.anno, e.annotationHandler)
