@@ -56,11 +56,11 @@ A list of annotation types as JSON objects.
         }
     ]
 
-### Annotations ( /api/annotations )
+#### Annotations ( /api/annotations )
 
 This endpoint can be use to search and post annotations.
 
-#### Querying
+##### Querying
 
 To retrieve annotations a GET request must be made:
 
@@ -105,7 +105,7 @@ A list of annotations as JSON objects.
 |**end**|End time in epoch seconds or string with the appropriate format. |No| float or string (YYYY.MM.DD-hh:mm:ss) |
 
 
-#### Annotating
+##### Annotating
 
 To submit an annotation, make a POST request to the same endpoint as follows:
 
@@ -157,6 +157,7 @@ To submit an annotation, make a POST request to the same endpoint as follows:
 
 
 ### Schema
+----------
 
 An annotation schema is layed out as follows:
 
