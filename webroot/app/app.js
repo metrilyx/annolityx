@@ -23,9 +23,7 @@ var app = angular.module('app', [
 ]);
 
 (function() {
-	/*
-	 * Bootstrap the app with the config fetched via http
-	 */
+	// Bootstrap the app with the config fetched via http //
 	var configConstant = "AnnolityxConfig";
 	var configUrl      = "/api/config";
 

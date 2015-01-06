@@ -9,7 +9,7 @@ dbfile = "conf/annotation-types.json"
 type = "elasticsearch"
 host = "localhost"
 port = 9200
-index = "event_annotations"
+index = "annolityx"
 mapping_file = "conf/eventannotations-mapping.json"
 
 [http]

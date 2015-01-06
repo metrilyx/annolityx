@@ -98,6 +98,12 @@ func (e *EventAnnoService) Start() error {
 	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.anno)
 	http.HandleFunc(e.Endpoints.anno, e.annotationHandler)
 
+	if strings.HasSuffix(e.Endpoints.anno, "/") {
+		http.HandleFunc(e.Endpoints.anno[:len(e.Endpoints.anno)-1], e.annotationHandler)
+	} else {
+		http.HandleFunc(fmt.Sprintf("%s/", e.Endpoints.anno), e.annotationHandler)
+	}
+
 	e.logger.Warning.Printf("Starting HTTP service %s...\n", e.ListenAddr)
 	return http.ListenAndServe(e.ListenAddr, nil)
 }
@@ -163,7 +169,29 @@ func (e *EventAnnoService) configHandler(w http.ResponseWriter, r *http.Request)
 	e.writeJsonResponse(w, r, resp, code)
 }
 
+func (e *EventAnnoService) parseRequestPath(r *http.Request) []string {
+	parts := make([]string, 0)
+	for _, s := range strings.Split(r.URL.Path, "/") {
+		if s != "" {
+			parts = append(parts, s)
+		}
+	}
+	return parts
+}
+
 func (e *EventAnnoService) handleAnnoGetRequest(r *http.Request) (interface{}, int) {
+	reqPathParts := e.parseRequestPath(r)
+
+	if len(reqPathParts) == 4 {
+		resp, err := e.Datastore.Get(reqPathParts[2], reqPathParts[3])
+		if err != nil {
+			if err.Error() == "record not found" {
+				return map[string]string{"error": err.Error()}, 404
+			}
+			return map[string]string{"error": err.Error()}, 400
+		}
+		return resp, 200
+	}
 
 	pp := parsers.AnnoQueryParamsParser{r.URL.Query(), r.Body}
 	q, err := pp.ParseGetParams()
@@ -191,7 +219,7 @@ func (e *EventAnnoService) handleAnnoPostPutRequest(r *http.Request) (interface{
 	if err != nil {
 		return fmt.Sprintf(`{"error": "%s"}`, err.Error()), 400
 	}
-	resp, err := e.Datastore.Annotate(*evtAnno)
+	resp, err := e.Datastore.Annotate(evtAnno)
 	if err != nil {
 		return fmt.Sprintf(`{"error": "%s"}`, err.Error()), 401
 	}
@@ -305,7 +333,8 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 			continue
 		}
 
-		var annoCfm annotations.EventAnnoConfirmation
+		var annoCfm annotations.EventAnnotation
+		//var annoCfm annotations.EventAnnoConfirmation
 		err = json.Unmarshal([]byte(evtAnnoMsg.Data), &annoCfm)
 		if err != nil {
 			e.logger.Error.Printf("Decode failure: %s\n", evtAnnoMsg)

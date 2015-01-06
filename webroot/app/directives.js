@@ -102,4 +102,11 @@ angular.module('app.directives', [])
 			}, true);
 		}
 	};
+}])
+.directive('annotationDetail', [function() {
+	return {
+		restrict: 'A',
+		templateUrl: 'partials/anno-details.html',
+		link: function(scope, elem, attrs, ctrl) {}
+	};
 }]);

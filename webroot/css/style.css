@@ -173,6 +173,32 @@ td#message-search {
 	box-shadow: inset 0 1px 1em rgba(0, 0, 0, 0.075);
 }
 
+.anno-detail {
+	position:absolute;
+	width:250px;
+	display: none;
+}
+
+.anno-detail-body {
+	color: #ccc;
+}
+.anno-detail-body > table {
+	color:#aaa;
+}
+.anno-detail-body {
+	background: rgba(58,58,58,0.9);
+	border-radius: 2px;
+	position: absolute;
+	left: 10px;
+	top: -37px;
+	padding-bottom: 7px;
+	min-height: 70px;
+}
+
+.annotation:hover .anno-detail {
+	display: block;
+}
+
 .anno-tag-kv-input>.form-control,
 .anno-tag-kv-input {
 	transition: all 0.35s ease;

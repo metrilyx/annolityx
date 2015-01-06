@@ -6,10 +6,11 @@ var appFactories = angular.module("app.factories", [])
         var t = this;
 
         var wsock;
-        var uri = AnnolityxConfig.websocket.url;
+        //var uri = AnnolityxConfig.websocket.url;
         
         var maxRetries = 3;
         var retryCount = 0;
+        var retryInterval = 10000;
         
         var msgCallback = cb;
         var messageFilter = messageFilter;
@@ -27,22 +28,19 @@ var appFactories = angular.module("app.factories", [])
         function onWsClose(evt) {
             console.log('Connection closed', evt);
             wsock = null;
-            //if(retries < retryCount) {
+            
+            if(retryCount < maxRetries) {
 
-            console.log('Reconnecting in 5sec...');
+                console.log('Reconnecting in 5sec...');
 
-            setTimeout(function() {
-                if(retryCount < maxRetries) {
+                setTimeout(function() {
                     connect();
-                    retryCount++;
-                } else {
-                    console.log('Max retries exceeded!');
-                }
-            }, 5000);
+                }, retryInterval);
 
-            //    retries++;
-            //}
-            //console.log('Max retries exceeded!');
+                retryCount++;
+            } else {
+                console.log('Max retries exceeded!');
+            }
         }
 
         function msgErrback(e) {
@@ -66,7 +64,7 @@ var appFactories = angular.module("app.factories", [])
         }
 
         function connect() {
-            wsock = new WebSocket(uri);
+            wsock = new WebSocket(AnnolityxConfig.websocket.url);
             wsock.addEventListener('open', onWsOpen);
             wsock.addEventListener('message', onWsMessage);
             wsock.addEventListener('close', onWsClose);
@@ -173,7 +171,6 @@ var appFactories = angular.module("app.factories", [])
 .factory("AnnoFilterManager", ['$routeParams', function($routeParams) {
 
     var AnnoFilterManager = function(scope) {
-
         var t = this;
 
         function parseTypes() {

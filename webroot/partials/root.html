@@ -24,8 +24,11 @@
                 <div style="font-weight:bold">Tags</div>
             </td>
         </tr>
-        <tr ng-repeat="annotation in annoResults | filter: annoMessageSearch | orderBy:annoSortKey:annoSortReverse | limitTo:maxResults">
-            <td class="anno-table-cell" style="font-size:12px;border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">{{annotation.timestamp|datetimeFromEpoch}}</td>
+        <tr class="annotation" ng-repeat="annotation in annoResults | filter: annoMessageSearch | orderBy:annoSortKey:annoSortReverse | limitTo:maxResults">
+            <td class="anno-table-cell" style="font-size:12px;border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">
+                <div>{{annotation.timestamp|datetimeFromEpoch}}</div>
+                <div class="anno-detail" annotation-detail></div>
+            </td>
             <td class="anno-table-cell" style="font-size:13px;word-wrap:break-word;word-break:break-all">{{annotation.message}}</td>
             <td class="anno-table-cell" style="text-align:center">
                 <span class="badge" style="background:{{annoTypesIndex[annotation.type].metadata.color}}">{{annoTypesIndex[annotation.type].name}}</span>

@@ -1,5 +1,5 @@
 angular.module('app.services', [])
-.factory('Authenticator', ['$window', '$http', '$location', function($window, $http, $location) {
+.factory('Authenticator', ['$window', '$http', '$location', '$routeParams', function($window, $http, $location, $routeParams) {
 
 	function _sessionIsAuthenticated() {
 		if($window.sessionStorage['credentials']) {
@@ -30,8 +30,13 @@ angular.module('app.services', [])
 		$location.url("/login");
 	}
 
-    function _checkAuthOrRedirect(redirectTo) {
-        if(!_sessionIsAuthenticated()) $location.url("/login?redirect="+redirectTo);
+    function _checkAuthOrRedirect() {
+        if(!_sessionIsAuthenticated()) {
+            $location.url("/login?redirect="+$location.url());
+            return false;
+        } else {
+            return true;
+        }
     }
 
 	var Authenticator = {

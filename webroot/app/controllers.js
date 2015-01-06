@@ -4,16 +4,17 @@ angular.module('app.controllers', [])
 	'EvtAnnoService', 'EventAnnotationTypes', 'WebSocketManager', 'TimeWindowManager', 'AnnoFilterManager',
 	function($window, $scope, $location, Authenticator, 
 		EvtAnnoService, EventAnnotationTypes, WebSocketManager, TimeWindowManager, AnnoFilterManager) {
+		console.log('called');
 
-		Authenticator.checkAuthOrRedirect("/");
+		if(!Authenticator.checkAuthOrRedirect()) return;
 
-		$scope.pageHeaderHtml    = "/partials/page-header.html";
-		$scope.sidePanelHtml     = "/partials/side-panel.html";
-		$scope.timeSelectorHtml  = "/partials/time-selector.html";
+		$scope.pageHeaderHtml    = "partials/page-header.html";
+		$scope.sidePanelHtml     = "partials/side-panel.html";
+		$scope.timeSelectorHtml  = "partials/time-selector.html";
 
 		var annoFilterMgr = new AnnoFilterManager($scope);
-		var timeWinMgr = new TimeWindowManager($scope);
-		var webSockMgr;
+		var timeWinMgr 	  = new TimeWindowManager($scope);
+		var webSockMgr    = new WebSocketManager(onWebsockData, $scope.annoFilter);
 
 		$scope.tagKeyValueInput = "";
 
@@ -95,10 +96,9 @@ angular.module('app.controllers', [])
 			$scope.sortAnnoByKey = sortAnnoByKey;
 			$scope.removeAnnoTag = removeAnnoTag;
 
-			/* TODO: only if relative time */
 			if($scope.timeDimension.activeType == 'relative') {
 				console.log("Live events enabled.");
-				webSockMgr = new WebSocketManager(onWebsockData, $scope.annoFilter);
+				//webSockMgr = 
 				webSockMgr.connect();
 			}
 
@@ -118,7 +118,7 @@ angular.module('app.controllers', [])
 .controller('defaultController', [ '$window', '$location', '$scope',
 	function($window, $location, $scope) {
 
-		$scope.pageHeaderHtml = "/partials/page-header.html";
+		//$scope.pageHeaderHtml = "partials/page-header.html";
 
 		$scope.logOut = function() {
 
@@ -127,12 +127,7 @@ angular.module('app.controllers', [])
 	        if(sStor['credentials']) {
 	            delete sStor['credentials'];
 	        }
-	        /*
-	        var lStor = $window.localStorage;
-	        for(var k in lStor) {
-	            if(/^token\-/.test(k)) delete lStor[k];
-	        }
-			*/
+	        //var lStor = $window.localStorage;
 	        $location.url("/login");
 	    }
 	}

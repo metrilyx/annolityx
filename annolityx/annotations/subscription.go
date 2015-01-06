@@ -5,7 +5,7 @@ type Subscription struct {
 	Tags  map[string]string
 }
 
-func (s *Subscription) IsSubscribedMessage(anno EventAnnoConfirmation) bool {
+func (s *Subscription) IsSubscribedMessage(anno EventAnnotation) bool {
 	if len(s.Tags) < 1 {
 		return true
 	}

@@ -83,8 +83,8 @@ func Test_ElasticsearchDatastore_Privates(t *testing.T) {
 	t.Logf("getQuery(%#v)", testAnnoQuery)
 }
 
-func Test_ElasticsearchDatastore_Annotate(t *testing.T) {
-	resp, err := testEssDatastore.Annotate(testAnno)
+func Test_ElasticsearchDatastore_Annotate_Get(t *testing.T) {
+	resp, err := testEssDatastore.Annotate(&testAnno)
 	if err != nil {
 		t.Errorf("%s", err)
 		t.FailNow()
@@ -92,6 +92,14 @@ func Test_ElasticsearchDatastore_Annotate(t *testing.T) {
 	t.Logf("Annotate(%#v)", testAnno)
 	j, _ := json.MarshalIndent(&resp, "", "  ")
 	t.Logf("%s", j)
+
+	respEvt, err := testEssDatastore.Get(resp.Type, resp.Id)
+	if err != nil {
+		t.Errorf("%s", err)
+		t.FailNow()
+	}
+
+	t.Logf("%s", respEvt)
 }
 
 func Test_ElasticsearchDatastore_Query(t *testing.T) {

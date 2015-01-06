@@ -5,16 +5,14 @@ import (
 	"time"
 )
 
-var testEvtAnnoCfm EventAnnoConfirmation = EventAnnoConfirmation{
-	Id: "testid",
-	EventAnnotation: EventAnnotation{
-		Type:            "test",
-		Message:         "Test message",
-		Tags:            map[string]string{"test": "test"},
-		Data:            map[string]interface{}{"contact": "test"},
-		Timestamp:       float64(time.Now().UnixNano()) / 1000000000,
-		PostedTimestamp: float64(time.Now().UnixNano()) / 1000000000,
-	},
+var testEvtAnnoCfm EventAnnotation = EventAnnotation{
+	Id:              "testid",
+	Type:            "test",
+	Message:         "Test message",
+	Tags:            map[string]string{"test": "test"},
+	Data:            map[string]interface{}{"contact": "test"},
+	Timestamp:       float64(time.Now().UnixNano()) / 1000000000,
+	PostedTimestamp: float64(time.Now().UnixNano()) / 1000000000,
 }
 
 func Test_Subscription(t *testing.T) {

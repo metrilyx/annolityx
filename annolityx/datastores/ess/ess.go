@@ -73,30 +73,50 @@ func (e *ElasticsearchDatastore) initializeIndex(mappingFile string) error {
 	return nil
 }
 
+func (e *ElasticsearchDatastore) Get(etype, id string) (*annotations.EventAnnotation, error) {
+	var evt annotations.EventAnnotation
+
+	resp, err := e.conn.Get(e.index, etype, id, nil)
+	if err != nil {
+		return &evt, err
+	}
+
+	if err = json.Unmarshal(*resp.Source, &evt); err != nil {
+		return &evt, err
+	}
+	return &evt, nil
+}
+
+func (e *ElasticsearchDatastore) generateId(anno *annotations.EventAnnotation) (string, error) {
+	if anno.Id == "" {
+		b, err := json.Marshal(&anno)
+		if err != nil {
+			return "", err
+		}
+		anno.Id = fmt.Sprintf("%x", sha1.Sum(b))
+	}
+	return anno.Id, nil
+}
+
 // type IEventAnnotation interface //
-func (e *ElasticsearchDatastore) Annotate(anno annotations.EventAnnotation) (*annotations.EventAnnoConfirmation, error) {
-	var resp annotations.EventAnnoConfirmation
+func (e *ElasticsearchDatastore) Annotate(anno *annotations.EventAnnotation) (*annotations.EventAnnotation, error) {
 
 	anno.PostedTimestamp = float64(time.Now().UnixNano()) / 1000000000
 
 	id, err := e.generateId(anno)
 	if err != nil {
-		return &resp, err
+		return anno, err
 	}
+
 	essResp, err := e.conn.Index(e.index, anno.Type, id, nil, anno)
 	e.conn.Flush()
 	if err != nil {
-		return &resp, err
+		return anno, err
 	}
 	if !essResp.Created {
-		return &resp, fmt.Errorf("Failed to annotate: %s", essResp)
+		return anno, fmt.Errorf("Failed to annotate: %s", essResp)
 	}
-
-	resp = annotations.EventAnnoConfirmation{
-		EventAnnotation: anno,
-		Id:              essResp.Id}
-
-	return &resp, nil
+	return anno, nil
 }
 
 // type IEventAnnotation interface //
@@ -136,14 +156,6 @@ func (e *ElasticsearchDatastore) Query(annoQuery annotations.EventAnnotationQuer
 	}
 
 	return out, nil
-}
-
-func (e *ElasticsearchDatastore) generateId(anno annotations.EventAnnotation) (string, error) {
-	b, err := json.Marshal(&anno)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%x", sha1.Sum(b)), nil
 }
 
 func (e *ElasticsearchDatastore) getQuery(q annotations.EventAnnotationQuery, splitByType bool) ([]interface{}, error) {
