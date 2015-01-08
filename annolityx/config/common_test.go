@@ -2,14 +2,14 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
-	"os"
+	"path/filepath"
 	"testing"
 )
 
-var testConfigFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annolityx.toml", os.Getenv("GOPATH"))
+var testConfigFile, _ = filepath.Abs("../../conf/annolityx.toml")
 
 func Test_LoadConfigFromFile(t *testing.T) {
+	t.Logf("%s", testConfigFile)
 	testConfig, err := LoadConfigFromFile(testConfigFile)
 	if err != nil {
 		t.Errorf("FAILED: %s", err)

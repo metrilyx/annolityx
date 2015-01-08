@@ -1,4 +1,4 @@
-# Annolityx [![Build Status] (https://travis-ci.org/metrilyx/annolityx.svg?branch=master)]
+# Annolityx ![Build Status] (https://travis-ci.org/metrilyx/annolityx.svg?branch=master)
 
 Annolityx allows you to capture and annotate events.  It is designed to integrate with dashboarding engines.
 
@@ -6,7 +6,7 @@ Annolityx allows you to capture and annotate events.  It is designed to integrat
 
 To get the source, build and install annolityx:
 
-    go get github.com/metrilyx/annolityx
+    go install github.com/metrilyx/annolityx
 
 On success, you can find the binary at **$GOPATH/bin/annolityx**.  The service can now be started by issueing the following command:
 
@@ -166,3 +166,9 @@ An annotation schema is layed out as follows:
 * **tags**            : Single level JSON object with arbitrary user tags (used for filtering and searching)
 * **message**         : User message string
 
+### Develop
+
+##### Testing
+
+    cd $GOPATH/src/github.com/metrilyx/annolityx
+    go test -cover -v ./...

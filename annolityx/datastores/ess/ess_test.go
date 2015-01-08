@@ -2,17 +2,16 @@ package ess
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"github.com/metrilyx/annolityx/annolityx/config"
 	"github.com/metrilyx/annolityx/annolityx/datastores"
-	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
 
-var testConfigFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annolityx.toml", os.Getenv("GOPATH"))
-var testTypesDbFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annotation-types.json", os.Getenv("GOPATH"))
+var testConfigFile, _ = filepath.Abs("../../../conf/annolityx.toml")
+var testTypesDbFile, _ = filepath.Abs("../../../conf/annotation-types.json")
 
 var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
 var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{}
