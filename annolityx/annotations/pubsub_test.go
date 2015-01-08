@@ -3,16 +3,20 @@ package annotations
 import (
 	"fmt"
 	"github.com/metrilyx/annolityx/annolityx/config"
-	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
 
-var testSrvPort = 34343
-
 var testConfigFile, _ = filepath.Abs("../../conf/annolityx.toml")
+
 var testCfg *config.Config = &config.Config{}
-var testSubConnUri string = "tcp://localhost:34343"
+
+var (
+	testSrvPort    = 34343
+	testListenAddr = fmt.Sprintf("tcp://*:%d", testSrvPort)
+	testSubConnUri = fmt.Sprintf("tcp://localhost:%d", testSrvPort)
+)
 
 func Test_LoadConfigFromFile(t *testing.T) {
 	var err error
@@ -38,15 +42,12 @@ func Test_NewEventAnno_PublisherSubscriber(t *testing.T) {
 		}
 		t.Logf("%#v", resp)
 	}()
-	//t.Logf("%#v", sub)
-	//listenAddr := fmt.Sprintf("tcp://*:34343", testCfg.Publisher.Port)
-	listenAddr := "tcp://*:34343"
-	pub, err := NewEventAnnoPublisher(listenAddr, "PUB")
+
+	pub, err := NewEventAnnoPublisher(testListenAddr, "PUB")
 	if err != nil {
 		t.Errorf("%s", err)
 		t.FailNow()
 	}
-	//t.Logf("%#v", pub)
 
 	err = pub.Publish("", `{"name": "test"}`)
 	time.Sleep(2)
