@@ -43,7 +43,7 @@ func Test_NewEventAnno_PublisherSubscriber(t *testing.T) {
 		t.Logf("%#v", resp)
 	}()
 
-	pub, err := NewEventAnnoPublisher(testListenAddr, "PUB")
+	pub, err := NewEventAnnoPublisher(testListenAddr, testCfg.Publisher.Type)
 	if err != nil {
 		t.Errorf("%s", err)
 		t.FailNow()

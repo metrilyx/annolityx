@@ -10,8 +10,11 @@ import (
 	"time"
 )
 
-var testConfigFile, _ = filepath.Abs("../../../conf/annolityx.toml")
-var testTypesDbFile, _ = filepath.Abs("../../../conf/annotation-types.json")
+var (
+	testConfigFile, _  = filepath.Abs("../../../conf/annolityx.toml")
+	testTypesDbFile, _ = filepath.Abs("../../../conf/annotation-types.json")
+	testMappingFile, _ = filepath.Abs("../../../conf/eventannotations-mapping.json")
+)
 
 var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
 var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{}
@@ -59,6 +62,7 @@ func Test_NewElasticsearchDatastore(t *testing.T) {
 	if err != nil {
 		t.Fatalf("%s", err)
 	}
+	testConfig.Datastore.MappingFile = testMappingFile
 	testEssDatastore, err = NewElasticsearchDatastore(testConfig)
 	if err != nil {
 		t.Fatalf("%s", err)
