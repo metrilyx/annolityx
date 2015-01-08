@@ -3,13 +3,16 @@ package annotations
 import (
 	"fmt"
 	"github.com/metrilyx/annolityx/annolityx/config"
+	"os"
 	"testing"
 	"time"
 )
 
-var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annolityx.toml"
+var testSrvPort = 34343
+
+var testConfigFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annolityx.toml", os.Getenv("GOPATH"))
 var testCfg *config.Config = &config.Config{}
-var testSubConnUri string = "tcp://localhost:%d"
+var testSubConnUri string = "tcp://localhost:34343"
 
 func Test_LoadConfigFromFile(t *testing.T) {
 	var err error
@@ -36,7 +39,8 @@ func Test_NewEventAnno_PublisherSubscriber(t *testing.T) {
 		t.Logf("%#v", resp)
 	}()
 	//t.Logf("%#v", sub)
-	listenAddr := fmt.Sprintf("tcp://*:%d", testCfg.Publisher.Port)
+	//listenAddr := fmt.Sprintf("tcp://*:34343", testCfg.Publisher.Port)
+	listenAddr := "tcp://*:34343"
 	pub, err := NewEventAnnoPublisher(listenAddr, "PUB")
 	if err != nil {
 		t.Errorf("%s", err)
