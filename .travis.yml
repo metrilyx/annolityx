@@ -6,3 +6,6 @@ go:
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq libzmq3-dev
+
+services:
+ - elasticsearch

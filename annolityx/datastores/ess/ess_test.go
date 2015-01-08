@@ -2,15 +2,17 @@ package ess
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"github.com/metrilyx/annolityx/annolityx/config"
 	"github.com/metrilyx/annolityx/annolityx/datastores"
+	"os"
 	"testing"
 	"time"
 )
 
-var testConfigFile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annolityx.toml"
-var testTypestoreDbfile string = "/Users/abs/workbench/GoLang/src/github.com/metrilyx/annolityx/conf/annotation-types.json"
+var testConfigFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annolityx.toml", os.Getenv("GOPATH"))
+var testTypesDbFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annotation-types.json", os.Getenv("GOPATH"))
 
 var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
 var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{}
@@ -144,7 +146,7 @@ func Test_ElasticsearchDatastore_Query(t *testing.T) {
 }
 
 func Test_ElasticsearchDatastore_ListTypes(t *testing.T) {
-	testTypestore, err := datastores.NewJsonFileTypestore(testTypestoreDbfile)
+	testTypestore, err := datastores.NewJsonFileTypestore(testTypesDbFile)
 	if err != nil {
 		t.Errorf("%s", err)
 		t.FailNow()

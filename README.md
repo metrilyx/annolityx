@@ -1,8 +1,6 @@
-annolityx
-=========
+# Consul [!Build Status] (https://travis-ci.org/metrilyx/annolityx.svg?branch=master)]
 
 Annolityx allows you to capture and annotate events.  It is designed to integrate with dashboarding engines.
-
 
 ## Getting started
 
