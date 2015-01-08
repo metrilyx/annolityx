@@ -4,6 +4,7 @@
     <ng-include src="timeSelectorHtml"></ng-include>
     <table class="table anno-table" style="margin-bottom:0px;">
         <tr>
+            <td></td>
             <td style="font-weight:bold;vertical-align:middle">
                 <div ng-click="sortAnnoByKey('timestamp')" title="Sort by Time">
                     <span class="caret"></span>
@@ -25,10 +26,13 @@
             </td>
         </tr>
         <tr class="annotation" ng-repeat="annotation in annoResults | filter: annoMessageSearch | orderBy:annoSortKey:annoSortReverse | limitTo:maxResults">
-            <td class="anno-table-cell" style="font-size:12px;border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">
-                <div>{{annotation.timestamp|datetimeFromEpoch}}</div>
-                <div class="anno-detail" annotation-detail></div>
+            <td class="anno-table-cell" style="border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">
+                <div ng-click="toggleAnnoDetails(annotation._id)" style="cursor:pointer;padding-left:5px;">
+                    <span class="glyphicon glyphicon-eye-open" style="color:{{annoTypesIndex[annotation.type].metadata.color}}"></span>
+                </div>
+                <div class="anno-detail" annotation-detail data-anno-id="{{annotation._id}}"></div>
             </td>
+            <td class="anno-table-cell" style="width: 240px;font-size:12px;">{{annotation.timestamp|datetimeFromEpoch}}</td>
             <td class="anno-table-cell" style="font-size:13px;word-wrap:break-word;word-break:break-all">{{annotation.message}}</td>
             <td class="anno-table-cell" style="text-align:center">
                 <span class="badge" style="background:{{annoTypesIndex[annotation.type].metadata.color}}">{{annoTypesIndex[annotation.type].name}}</span>

@@ -90,15 +90,20 @@ angular.module('app.controllers', [])
 			return query;
 		}
 
+		function toggleAnnoDetails(_id) {
+			$("[data-anno-id='"+_id+"']").toggle();
+		}
+
 		function _initialize() {
 			
 			$scope.setTimeRange = setTimeRange;
 			$scope.sortAnnoByKey = sortAnnoByKey;
 			$scope.removeAnnoTag = removeAnnoTag;
+			$scope.toggleAnnoDetails = toggleAnnoDetails;
+
 
 			if($scope.timeDimension.activeType == 'relative') {
 				console.log("Live events enabled.");
-				//webSockMgr = 
 				webSockMgr.connect();
 			}
 

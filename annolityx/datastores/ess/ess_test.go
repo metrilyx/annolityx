@@ -17,16 +17,33 @@ var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{
 
 var testConfig *config.Config = &config.Config{}
 
-var testType string = "Deployment"
+var testType string = "deployment"
 var testAnnoMsg string = "Test deployment annotations"
 var testAnnoData map[string]interface{} = map[string]interface{}{
-	"host": "foo.bar.org", "datacenter": "dc1", "contact": "bar@foo.bar.org"}
-var testTags map[string]string = map[string]string{"host": "foo", "dc": "dc1"}
+	"host":       "foo.bar.org",
+	"datacenter": "dc1",
+	"contact":    "bar@foo.bar.org",
+}
+var testQueryTags map[string]string = map[string]string{
+	"class": "met",
+	"dc":    "dc1|dc2",
+}
+var testTags = map[string]string{"dc": "dc1", "class": "met"}
+
+var testCartesianTags = map[string][]string{
+	"dc":    []string{"dc1", "dc2"},
+	"class": []string{"app", "met"},
+}
 
 var testStart float64 = 1418081663
 var testEnd float64 = -1
+
 var testAnnoQuery annotations.EventAnnotationQuery = annotations.EventAnnotationQuery{
-	[]string{testType}, testTags, testStart, -1}
+	Types: []string{testType},
+	Tags:  testQueryTags,
+	Start: testStart,
+	End:   testEnd,
+}
 
 var testAnno annotations.EventAnnotation = annotations.EventAnnotation{
 	Type:      testType,
@@ -58,11 +75,11 @@ func Test_ElasticsearchDatastore_Privates(t *testing.T) {
 	}
 
 	tagsQ := testEssDatastore.tagsQuery(testTags)
-	if len(tagsQ) != 2 {
-		t.Errorf("Length mismatch: %s\n", tagsQ)
-	} else {
-		t.Logf("tagsQuery(%s)", testTags)
-	}
+	//if len(tagsQ) != 2 {
+	//	t.Errorf("Length mismatch: %s\n", tagsQ)
+	//} else {
+	t.Logf("tagsQuery(%s)", tagsQ)
+	//}
 
 	timeQ, err := testEssDatastore.timeQuery(testStart, testEnd)
 	if err != nil {
@@ -81,6 +98,14 @@ func Test_ElasticsearchDatastore_Privates(t *testing.T) {
 		t.FailNow()
 	}
 	t.Logf("getQuery(%#v)", testAnnoQuery)
+}
+
+func Test_ElasticsearchDatastore_tagsCartesianProduct(t *testing.T) {
+	tagsArr := testEssDatastore.tagsCartesianProduct(testCartesianTags)
+	if len(tagsArr) != 4 {
+		t.Errorf("Tags mismatch: %d", len(tagsArr))
+		t.FailNow()
+	}
 }
 
 func Test_ElasticsearchDatastore_Annotate_Get(t *testing.T) {
@@ -115,6 +140,7 @@ func Test_ElasticsearchDatastore_Query(t *testing.T) {
 	}
 	t.Logf("Query(%#v)", testAnnoQuery)
 	t.Logf("Result count: %d", len(resp))
+	t.Logf("%#v", resp[0])
 }
 
 func Test_ElasticsearchDatastore_ListTypes(t *testing.T) {

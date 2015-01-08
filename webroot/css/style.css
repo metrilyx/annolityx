@@ -179,24 +179,26 @@ td#message-search {
 	display: none;
 }
 
-.anno-detail-body {
-	color: #ccc;
+.anno-details-cont {
+	position:absolute;top:-15px;left:15px
+}
+.anno-details-cont:hover {
+	z-index: 1;
 }
 .anno-detail-body > table {
 	color:#aaa;
 }
 .anno-detail-body {
-	background: rgba(58,58,58,0.9);
+	background: rgba(58,58,58,0.98);
 	border-radius: 2px;
 	position: absolute;
 	left: 10px;
-	top: -37px;
+	top: -40px;
 	padding-bottom: 7px;
 	min-height: 70px;
-}
-
-.annotation:hover .anno-detail {
-	display: block;
+	color: #ccc;
+	box-shadow: 7px 10px 6px -6px rgba(0,0,0,0.3);
+	border-bottom: 1px solid #444;
 }
 
 .anno-tag-kv-input>.form-control,
@@ -226,7 +228,6 @@ td#message-search {
 tr>td.anno-table-cell:first-child {
 	transition: all 0.3s ease;
 	border-left: 0px solid transparent;
-	width: 240px;
 }
 table.table>tbody>tr>td.anno-table-cell {
 	transition: all 0.35s ease;

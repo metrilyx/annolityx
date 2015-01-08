@@ -233,12 +233,70 @@ func (e *ElasticsearchDatastore) typeQuery(eType string) map[string]map[string]s
 	return map[string]map[string]string{"term": {"type": etype}}
 }
 
-func (e *ElasticsearchDatastore) tagsQuery(tagMap map[string]string) []map[string]map[string]string {
-	tQuery := make([]map[string]map[string]string, len(tagMap))
+func (e *ElasticsearchDatastore) tagsCartesianProduct(tagmap map[string][]string) []map[string]string {
+
+	/* Create 2D array of tags */
+	sets := make([][]string, 0)
+	for k, vals := range tagmap {
+		valSet := make([]string, len(vals))
+		for j, val := range vals {
+			valSet[j] = fmt.Sprintf("%s:%s", k, val)
+		}
+		sets = append(sets, valSet)
+	}
+
 	i := 0
-	for k, v := range tagMap {
-		tQuery[i] = map[string]map[string]string{"term": {fmt.Sprintf("tags.%s", k): v}}
+	out := make([]map[string]string, 0)
+	for {
+		result := make([]string, 0)
+		j := i
+
+		for _, l := range sets {
+			result = append(result, l[j%len(l)])
+			j /= len(l)
+		}
+
+		if j > 0 {
+			return out
+		}
+
+		outMap := make(map[string]string)
+		for _, rslt := range result {
+			arr := strings.Split(rslt, ":")
+			outMap[arr[0]] = arr[1]
+		}
+		//fmt.Printf("rslt: %v\n", outMap)
+		out = append(out, outMap)
+
 		i++
 	}
-	return tQuery
+}
+
+//func (e *ElasticsearchDatastore) tagsQuery(tagMap map[string]string) []map[string]map[string]string {
+func (e *ElasticsearchDatastore) tagsQuery(tagMap map[string]string) []map[string]interface{} {
+	tagmap := make(map[string][]string)
+	for k, v := range tagMap {
+		tagmap[k] = strings.Split(v, "|")
+	}
+
+	outTags := make([]map[string]interface{}, len(tagmap))
+	i := 0
+	for k, vals := range tagmap {
+		outTags[i] = map[string]interface{}{
+			"terms": map[string][]string{fmt.Sprintf("tags.%s", k): vals},
+			/*"minimum_should_match": 1,*/
+		}
+		i++
+	}
+	//fmt.Printf("%#v\n", outTags)
+	return outTags
+	/*
+		tQuery := make([]map[string]map[string]string, len(tagMap))
+		i = 0
+		for k, v := range tagMap {
+			tQuery[i] = map[string]map[string]string{"term": {fmt.Sprintf("tags.%s", k): v}}
+			i++
+		}
+		return tQuery
+	*/
 }
