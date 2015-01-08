@@ -3,5 +3,3 @@ language: go
 go:
   - tip
 
-before_install:
-  - sudo apt-get install libzmq-dev
