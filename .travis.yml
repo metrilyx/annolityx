@@ -4,4 +4,4 @@ go:
   - tip
 
 before_install:
-  - apt-get install libzmq-dev
+  - sudo apt-get install libzmq-dev
