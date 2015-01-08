@@ -161,8 +161,10 @@ To submit an annotation, make a POST request to the same endpoint as follows:
 
 An annotation schema is layed out as follows:
 
-* **posted_timestamp**: time in epoch when event was submitted to the system
-* **timestamp**       : time in epoch when event occurred
-* **data**            : single level json object with arbitrary user data
-* **tags**            : single level json object with arbitrary user tags used for filtering and searching
-* **message**         : user message string
+* **posted_timestamp**: Time in epoch when event was submitted to the system
+* **timestamp**       : Time in epoch when event occurred
+* **type**            : Event type
+* **data**            : JSON object with arbitrary user data
+* **tags**            : Single level JSON object with arbitrary user tags (used for filtering and searching)
+* **message**         : User message string
+
