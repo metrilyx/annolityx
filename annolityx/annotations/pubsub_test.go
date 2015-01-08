@@ -10,7 +10,7 @@ import (
 
 var testSrvPort = 34343
 
-var testConfigFile string = fmt.Sprintf("%s/src/github.com/metrilyx/annolityx/conf/annolityx.toml", os.Getenv("GOPATH"))
+var testConfigFile, _ = filepath.Abs("../../conf/annolityx.toml")
 var testCfg *config.Config = &config.Config{}
 var testSubConnUri string = "tcp://localhost:34343"
 
