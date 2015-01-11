@@ -1,11 +1,19 @@
 language: go
-
 go:
-  - tip
-
+- tip
 before_install:
- - sudo apt-get update -qq
- - sudo apt-get install -qq libzmq3-dev
-
+- sudo make deps
+install:
+- sudo make test
+- sudo make build
 services:
- - elasticsearch
+- elasticsearch
+deploy:
+  provider: releases
+  api_key:
+    secure: aupUVwXeul8dd8DwfclqyLkawFdiZyUX+VpI2+F+Og8byeBCB/42EcxgA8ySKE4W+Fm617RSGUwPWN5x1t5XBqJ/w/NnLb8IgfbPBAZVwMLRR5jdFTxe+S7Vc0JeX5uIy6aCqvMPLwRMjR5peSYInYavmW0hTPHir8klPvMTVpo=
+  file: annolityx.tgz
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true

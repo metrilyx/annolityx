@@ -3,18 +3,18 @@ type = "PUB"
 port = 23456
 
 [typestore]
-dbfile = "conf/annotation-types.json"
+dbfile = "/etc/annolityx/annotation-types.json"
 
 [datastore]
 type = "elasticsearch"
 host = "localhost"
 port = 9200
 index = "annolityx"
-mapping_file = "conf/eventannotations-mapping.json"
+mapping_file = "/etc/annolityx/eventannotations-mapping.json"
 
 [http]
 port = 9898
-webroot = "webroot"
+webroot = "/usr/local/share/annolityx/webroot"
 anno_endpoint = "/api/annotations"
 types_endpoint = "/api/types"
 websocket_endpoint = "/data"

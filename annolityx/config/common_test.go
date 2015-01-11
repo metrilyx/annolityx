@@ -9,7 +9,6 @@ import (
 var testConfigFile, _ = filepath.Abs("../../conf/annolityx.toml")
 
 func Test_LoadConfigFromFile(t *testing.T) {
-	t.Logf("%s", testConfigFile)
 	testConfig, err := LoadConfigFromFile(testConfigFile)
 	if err != nil {
 		t.Errorf("FAILED: %s", err)

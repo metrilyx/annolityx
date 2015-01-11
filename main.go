@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	configFile = flag.String("c", "annolityx.toml", "Configuration file")
+	configFile = flag.String("c", "/etc/annolityx/annolityx.toml", "Configuration file")
 	webroot    = flag.String("webroot", "", "Path to web ui directory.")
 	logLevel   = flag.String("l", "info", "Log level")
 	version    = flag.Bool("version", false, "Version")
