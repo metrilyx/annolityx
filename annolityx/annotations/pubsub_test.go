@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-var testConfigFile, _ = filepath.Abs("../../conf/annolityx.toml")
+var testConfigFile, _ = filepath.Abs("../../etc/annolityx/annolityx.toml")
 
 var testCfg *config.Config = &config.Config{}
 

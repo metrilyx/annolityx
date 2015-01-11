@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	testConfigFile, _  = filepath.Abs("../../../conf/annolityx.toml")
-	testTypesDbFile, _ = filepath.Abs("../../../conf/annotation-types.json")
-	testMappingFile, _ = filepath.Abs("../../../conf/eventannotations-mapping.json")
+	testConfigFile, _  = filepath.Abs("../../../etc/annolityx/annolityx.toml")
+	testTypesDbFile, _ = filepath.Abs("../../../etc/annolityx/annotation-types.json")
+	testMappingFile, _ = filepath.Abs("../../../etc/annolityx/eventannotations-mapping.json")
 )
 
 var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
