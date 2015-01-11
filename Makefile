@@ -61,7 +61,16 @@ BUILDROOT := $(BUILDDIR)/$(NAME)
 	fi;
 
 .build:
-	go get -d -v ./... && go install -v ./...
+	go get -d -v ./...
+
+.test:
+	go test -v ./...
+
+.clean:
+	rm -rf ./build
+
+install:
+	go install -v ./...
 
 	if [ -e "$(BUILDROOT)" ]; then rm -rf "$(BUILDROOT)"; fi;
 	
@@ -80,10 +89,3 @@ BUILDROOT := $(BUILDDIR)/$(NAME)
 	cp README.md $(BUILDROOT)/$(DATA_DIR)/docs/
 
 	cd $(BUILDDIR) && tar -czvf $(NAME).tgz $(NAME) && cd -
-
-.test:
-	go test -v ./...
-
-.clean:
-	rm -rf ./build
-
