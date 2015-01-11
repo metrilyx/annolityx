@@ -66,9 +66,6 @@ test:
 build:
 	go get -d -v ./... && go build -v ./...
 
-install:
-	go install ./...
-
 	if [ -e "$(BUILDROOT)" ]; then rm -rf "$(BUILDROOT)"; fi;
 	
 	mkdir -p $(BUILDROOT)/usr/local/bin/;
