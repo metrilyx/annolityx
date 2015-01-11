@@ -4,9 +4,9 @@ go:
   - tip
 
 install:
-  - sudo make deps
-  - make build
-  - make test
+  - sudo make .deps
+  - make .build
+  - make .test
 
 services:
   - elasticsearch
