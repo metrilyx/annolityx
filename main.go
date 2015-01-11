@@ -21,7 +21,11 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Printf("%s-%s\n", Version, PreReleaseVersion)
+		if PreReleaseVersion != "" {
+			fmt.Printf("%s-%s\n", Version, PreReleaseVersion)
+		} else {
+			fmt.Printf("%s\n", Version)
+		}
 		os.Exit(0)
 	}
 

@@ -44,7 +44,7 @@ GO_PKG_PATH := github.com/metrilyx/$(NAME)
 
 DATA_DIR := /usr/local/share/$(NAME)
 
-BUILDDIR := `pwd`/build
+BUILDDIR := $(shell pwd)/build
 BUILDROOT := $(BUILDDIR)/$(NAME)
 
 deps:
@@ -68,10 +68,10 @@ build:
 
 install:
 	go install ./...
+
+	if [ -e "$(BUILDROOT)" ]; then rm -rf "$(BUILDROOT)"; fi;
 	
-	[ -d $(BUILDROOT) ] && rm -rf $(BUILDROOT)
-	
-	mkdir -p $(BUILDROOT)/usr/local/bin/
+	mkdir -p $(BUILDROOT)/usr/local/bin/;
 	cp ../../../../bin/annolityx $(BUILDROOT)/usr/local/bin/
 
 	mkdir -p $(BUILDROOT)/etc/init.d/
@@ -88,4 +88,5 @@ install:
 	cd $(BUILDDIR) && tar -czvf $(NAME).tgz $(NAME) && cd -
 
 
-
+clean:
+	rm -rf ./build
