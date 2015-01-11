@@ -47,6 +47,7 @@ DATA_DIR := /usr/local/share/$(NAME)
 BUILDDIR := $(shell pwd)/build
 BUILDROOT := $(BUILDDIR)/$(NAME)
 
+.PHONY: deps
 deps:
 	if [[ ( "$(DISTRO)" == "ubuntu" ) || ( "$(DISTRO)" == "debian" ) ]]; then \
 		apt-get update -qq; \
@@ -60,9 +61,7 @@ deps:
 		done; \
 	fi;
 
-test:
-	go test -v ./...
-
+.PHONY: build
 build:
 	go get -d -v ./... && go install -v ./...
 
@@ -84,8 +83,6 @@ build:
 
 	cd $(BUILDDIR) && tar -czvf $(NAME).tgz $(NAME) && cd -
 
-
-clean:
-	rm -rf ./build
-
-all:
+.PHONY: test
+test:
+	go test -v ./...

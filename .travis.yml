@@ -3,14 +3,13 @@ language: go
 go:
   - tip
 
+install:
+  - sudo make deps
+  - make build
+  - make test
+
 services:
   - elasticsearch
-
-before_install:
-  - sudo make deps
-
-after_install:
-  - make build
 
 deploy:
   provider: releases
