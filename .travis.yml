@@ -1,14 +1,14 @@
 language: go
 go:
 - tip
+services:
+- elasticsearch
 before_install:
 - sudo make deps
 install:
 - make build
 - make test
 - make install
-services:
-- elasticsearch
 deploy:
   provider: releases
   api_key:
