@@ -15,7 +15,7 @@ deploy:
   provider: releases
   api_key:
     secure: aupUVwXeul8dd8DwfclqyLkawFdiZyUX+VpI2+F+Og8byeBCB/42EcxgA8ySKE4W+Fm617RSGUwPWN5x1t5XBqJ/w/NnLb8IgfbPBAZVwMLRR5jdFTxe+S7Vc0JeX5uIy6aCqvMPLwRMjR5peSYInYavmW0hTPHir8klPvMTVpo=
-  file: build/annolityx.tgz
+  file: build/annolityx-ubuntu.tgz
   skip_cleanup: true
   on:
     tags: true
