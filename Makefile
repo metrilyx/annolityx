@@ -12,6 +12,8 @@ REDHAT_REL_F := /etc/redhat-release
 ifeq ($(UNAME),Darwin)
 	DISTRO := osx
 endif
+
+CODENAME :=
 ## Check oracle first as it also has the redhat-release file
 ifneq ("$(wildcard $(ORACLE_REL_F))", "")
 	DISTRO := oracle
@@ -88,4 +90,4 @@ install:
 	mkdir -p $(BUILDROOT)/$(DATA_DIR)/docs
 	cp README.md $(BUILDROOT)/$(DATA_DIR)/docs/
 
-	cd $(BUILDDIR) && tar -czvf $(NAME).tgz $(NAME) && cd -
+	cd $(BUILDDIR) && tar -czvf $(NAME)-$(DISTRO)-$(CODENAME).tgz $(NAME) && cd -
