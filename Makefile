@@ -1,7 +1,7 @@
 
 SHELL = /bin/bash
 
-UNAME = `uname | tr '[:upper:]' '[:lower:]'`
+UNAME = $(shell uname)
 
 ## Release file to determin distro and os
 UBUNTU_REL_F := /etc/lsb-release
@@ -9,13 +9,10 @@ DEBIAN_REL_F := /etc/debian_version
 ORACLE_REL_F := /etc/oracle-release
 REDHAT_REL_F := /etc/redhat-release
 ## Determine OS and Distribution
-ifeq ($(UNAME),Darwin)
+ifeq ($(UNAME), Darwin)
 	DISTRO := osx
-endif
-
-CODENAME :=
 ## Check oracle first as it also has the redhat-release file
-ifneq ("$(wildcard $(ORACLE_REL_F))", "")
+else ifneq ("$(wildcard $(ORACLE_REL_F))", "")
 	DISTRO := oracle
 else ifneq ("$(wildcard $(REDHAT_REL_F))", "")
 	DISTRO := redhat
@@ -28,7 +25,7 @@ else ifneq ("$(wildcard $(DEBIAN_REL_F))", "")
 	CODENAME := `cat $(DEBIAN_REL_F)`
 endif
 
-ifeq ($(DISTRO),"")
+ifeq ("$(DISTRO)", "")
 	echo "Could not determine distro!"
 	exit 1
 endif
@@ -90,4 +87,4 @@ install:
 	mkdir -p $(BUILDROOT)/$(DATA_DIR)/docs
 	cp README.md $(BUILDROOT)/$(DATA_DIR)/docs/
 
-	cd $(BUILDDIR) && tar -czvf $(NAME)-$(DISTRO)-$(CODENAME).tgz $(NAME) && cd -
+	cd $(BUILDDIR) && tar -czf $(NAME)-$(DISTRO).tgz $(NAME) && cd -
