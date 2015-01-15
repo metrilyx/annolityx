@@ -76,7 +76,8 @@ install:
 	mkdir -p $(BUILDROOT)/usr/local/bin/;
 	cp ../../../../bin/annolityx $(BUILDROOT)/usr/local/bin/
 
-	cp -a etc/annolityx $(BUILDROOT)/etc/annolityx
+	mkdir -p $(BUILDROOT)/etc/
+	cp -a etc/annolityx $(BUILDROOT)/etc/
 
 	mkdir -p $(BUILDROOT)/$(DATA_DIR)	
 	cp -a webroot $(BUILDROOT)/$(DATA_DIR)/
