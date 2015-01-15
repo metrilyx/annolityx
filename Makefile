@@ -76,9 +76,6 @@ install:
 	mkdir -p $(BUILDROOT)/usr/local/bin/;
 	cp ../../../../bin/annolityx $(BUILDROOT)/usr/local/bin/
 
-	mkdir -p $(BUILDROOT)/etc/init.d/
-	cp etc/init.d/annolityx $(BUILDROOT)/etc/init.d/
-	
 	cp -a etc/annolityx $(BUILDROOT)/etc/
 
 	mkdir -p $(BUILDROOT)/$(DATA_DIR)	
