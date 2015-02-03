@@ -1,0 +1,18 @@
+Package:
+    init_script:
+        runnable:
+            path: /usr/local/bin/annolityx
+    build_env: go
+
+Distributions:
+    - name: centos
+      release: 6
+      build_deps:
+      - zeromq3-devel
+      deps:
+      - zeromq3
+      build_cmd:
+      - go get -d -v ./...
+      - make install
+      post_install:
+      - "( id annolityx > /dev/null 2>&1 ) || useradd annolityx"
