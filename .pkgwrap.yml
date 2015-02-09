@@ -16,3 +16,19 @@ Distributions:
       - make install
       post_install:
       - "( id annolityx > /dev/null 2>&1 ) || useradd annolityx"
+
+    - name: ubuntu
+      release: 14.04
+
+      build_deps:
+      - libzmq3-dev
+      
+      deps:
+      - libzmq3
+
+      build_cmd:
+      - make .build
+      - make install
+
+      post_install:
+      - "( id annolityx > /dev/null 2>&1 ) || useradd annolityx"
