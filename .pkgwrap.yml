@@ -12,6 +12,7 @@ Distributions:
       deps:
       - zeromq3
       build_cmd:
+      - go get -u gopkg.in/yaml.v2
       - go get -d -v ./...
       - make install
       post_install:
