@@ -2,6 +2,7 @@ Package:
     init_script:
         runnable:
             path: /usr/local/bin/annolityx
+            args: -l info
     build_env: go
 
 Distributions:
