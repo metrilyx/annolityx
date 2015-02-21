@@ -166,6 +166,7 @@ An annotation schema is layed out as follows:
 * **tags**            : Single level JSON object with arbitrary user tags (used for filtering and searching)
 * **message**         : User message string
 
+
 ### Develop
 
 ##### Testing
