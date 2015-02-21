@@ -10,7 +10,7 @@ To get the source, build and install annolityx:
 
 On success, you can find the binary at **$GOPATH/bin/annolityx**.  The service can now be started by issueing the following command:
 
-    annolityx -c $GOPATH/github.com/metrilyx/annolityx/conf/annolityx.toml -webroot $GOPATH/github.com/metrilyx/annolityx/webroot -l info    
+    annolityx -c $GOPATH/github.com/metrilyx/annolityx/conf/annolityx.toml -l info    
 
 You can also provide that webroot path in the configuration file.  Once the service has been started you can view the UI at **http://localhost:9898/**
 
