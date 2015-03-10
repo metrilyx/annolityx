@@ -325,6 +325,7 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 		return
 	}
 
+	defer subscriber.Close()
 	e.logger.Warning.Printf("Subscriber connected to: %s\n", subAddr)
 	for {
 		evtAnnoMsg, err := subscriber.Recieve()

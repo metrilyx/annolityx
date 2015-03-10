@@ -84,6 +84,10 @@ func NewEventAnnoSubscriber(connectUri string, typeStr string, subscriptionStrs 
 	return &s, nil
 }
 
+func (e *EventAnnoSubscriber) Close() {
+	e.zsock.Close()
+}
+
 func (e *EventAnnoSubscriber) Recieve() (EventAnnoSubMessage, error) {
 	evtAnnoMsg := EventAnnoSubMessage{}
 
