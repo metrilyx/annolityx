@@ -65,20 +65,32 @@ type EventAnnoSubscriber struct {
 }
 
 func NewEventAnnoSubscriber(connectUri string, typeStr string, subscriptionStrs []string) (*EventAnnoSubscriber, error) {
-	s := EventAnnoSubscriber{}
+	var (
+		err   error
+		sock  *zmq.Socket
+		zType zmq.Type
+		s     = EventAnnoSubscriber{}
+	)
 
-	zType, err := GetZmqTypeFromString(typeStr)
+	zType, err = GetZmqTypeFromString(typeStr)
 	if err != nil {
 		return &s, err
 	}
-	sock, _ := zmq.NewSocket(zType)
+
+	sock, err = zmq.NewSocket(zType)
+	if err != nil {
+		return &s, err
+	}
+
 	err = sock.Connect(connectUri)
 	if err != nil {
 		return &s, err
 	}
+	// Set subscriptions
 	for _, v := range subscriptionStrs {
-		//fmt.Printf("subscribing to: %s\n", v)
-		sock.SetSubscribe(v)
+		if err = sock.SetSubscribe(v); err != nil {
+			return &s, err
+		}
 	}
 	s.zsock = sock
 	return &s, nil
