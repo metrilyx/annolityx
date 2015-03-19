@@ -4,12 +4,7 @@
             <span class="glyphicon glyphicon-tasks"></span>
             <span style="padding:0 5px;">Types :</span>
         </div>
-        <div style="margin-left:24px;transition:all 0.35s ease" title="Filter by type" ng-model="annoTypesIndex" annotation-types>
-            <div ng-repeat="(annoTypeId, annoType) in annoTypesIndex" ng-switch="annoType.selected" ng-click="annoType.selected=!annoType.selected" class="left-side-anno-type">
-                <span ng-switch-when="true" style="color: {{annoType.metadata.color}}" class="glyphicon glyphicon-adjust pull-right"></span>
-                <span ng-switch-default style="box-shadow: inset 2px 2px rgba(0,0,0,0.085);color: #aaa" class="glyphicon glyphicon-adjust pull-right"></span>
-                <span>{{annoType.name}}</span>
-            </div>
+        <div style="margin-left:24px;transition:all 0.35s ease" title="Filter by type" annotation-types>
         </div>
     </div>
     <div style="padding-top:10px;padding-bottom:10px;border-top: 1px solid #666;border-bottom:1px solid #454545">

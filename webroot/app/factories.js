@@ -1,34 +1,41 @@
-var appFactories = angular.module("app.factories", [])
+'use strict';
+
+angular.module("app.factories", [])
 .factory("WebSocketManager", [ 'AnnolityxConfig', function(AnnolityxConfig) {
+    /* this would be persistent across controller navigation */
+    var _wsock = null;
 
     var WebSocketManager = function(cb, messageFilter) {
-
+        //console.log('WebSocketManager');
         var t = this;
 
-        var wsock;
-        //var uri = AnnolityxConfig.websocket.url;
+        var msgCallback = cb,
+            messageFilter = messageFilter,
+            maxRetries = 3,
+            retryCount = 0,
+            retryInterval = 10000;
         
-        var maxRetries = 3;
-        var retryCount = 0;
-        var retryInterval = 10000;
-        
-        var msgCallback = cb;
-        var messageFilter = messageFilter;
 
-        function sendMessage(data) {
-            wsock.send(JSON.stringify(data));
+        var sendMessage = function(data) {
+            
+            _wsock.send(angular.toJson(data));
         }
 
-        function onWsOpen(evt) {
-            console.log("Connection open. Extentions: [ '" + wsock.extensions + "' ]");
+        var onWsOpen = function(evt) {
+            
+            console.log("Connection open. Extentions: [ '" + _wsock.extensions + "' ]");
             retryCount = 0;
             sendMessage(messageFilter);
         }
 
-        function onWsClose(evt) {
-            console.log('Connection closed', evt);
-            wsock = null;
+        var onWsClose = function(evt) {
             
+            console.log('Connection closed: code='+evt.code+
+                '; reason='+evt.reason+
+                '; wasClean='+evt.wasClean);
+            
+            _wsock = null;
+            /*
             if(retryCount < maxRetries) {
 
                 console.log('Reconnecting in 5sec...');
@@ -41,14 +48,15 @@ var appFactories = angular.module("app.factories", [])
             } else {
                 console.log('Max retries exceeded!');
             }
+            */
         }
 
-        function msgErrback(e) {
+        var msgErrback = function(evt) {
             console.error('Subscriber error:', evt.data);
-            console.warn(e);
+            console.warn(evt);
         }
 
-        function onWsMessage(evt) {
+       var onWsMessage = function(evt) {
             var data;
             try {
                 data = JSON.parse(evt.data);
@@ -63,23 +71,33 @@ var appFactories = angular.module("app.factories", [])
             }
         }
 
-        function connect() {
-            wsock = new WebSocket(AnnolityxConfig.websocket.url);
-            wsock.addEventListener('open', onWsOpen);
-            wsock.addEventListener('message', onWsMessage);
-            wsock.addEventListener('close', onWsClose);
+        var connect = function() {
+            _wsock = new WebSocket(AnnolityxConfig.websocket.url);
+            _wsock.addEventListener('open', onWsOpen);
+            _wsock.addEventListener('message', onWsMessage);
+            _wsock.addEventListener('close', onWsClose);
+        }
+
+        var disconnect = function(reason) {
+            
+            if ( _wsock && _wsock.readyState == 1 ) {
+                //console.log('Already connected!');
+                _wsock.removeEventListener('close', onWsClose);
+                // 1000 = normal close
+                _wsock.close(1000, reason);    
+            }
         }
 
         function _initialize() {
             
             for(var k in messageFilter) {
-                
-                if(k !== 'tags' && k !== 'types') 
-                    delete messageFilter[k];
+                /* delete invalid keys */
+                if(k !== 'tags' && k !== 'types') delete messageFilter[k];
             }
-
+            
             t.sendMessage = sendMessage
             t.connect = connect;
+            t.disconnect = disconnect;
         }
 
         _initialize();

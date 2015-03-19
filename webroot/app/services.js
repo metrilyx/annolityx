@@ -56,14 +56,29 @@ angular.module('app.services', [])
         }
     });
 }])
-.factory('EventAnnotationTypes', ['$resource', function($resource) {
-    /* TODO: make this a cached call */
-    return $resource('/api/types/:annoType', {}, {
-        list: {
-            method: 'GET',
-            isArray: true,
+.factory('EventAnnotationTypes', ['$http', function($http) {
+    var _cache = null;
+    
+    return {
+        list: function() {
+            var _d = $.Deferred();
+            if (_cache != null && Object.keys(_cache).length > 0) {
+                _d.resolve(_cache);
+            } else {
+                $http({
+                    method: 'GET',
+                    url: '/api/types',
+                }).success(function(data) {
+                    _cache = data;
+                    _d.resolve(_cache);
+                }).error(function(err) {
+                    _d.reject(err);
+                });
+            }
+
+            return _d;
         }
-    });
+    };
 }]);
 
 

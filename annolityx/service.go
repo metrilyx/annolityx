@@ -38,6 +38,8 @@ type EventAnnoService struct {
 	pubSubPort int64
 	cfg        *config.Config
 	logger     *logging.Logger
+
+	wsClients int64
 }
 
 func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnnoService, error) {
@@ -46,6 +48,7 @@ func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnno
 		ListenAddr: fmt.Sprintf(":%d", cfg.Http.Port),
 		pubSubPort: cfg.Publisher.Port,
 		cfg:        cfg,
+		wsClients:  0,
 	}
 	if logger == nil {
 		eas.logger = logging.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
@@ -294,7 +297,7 @@ func (e *EventAnnoService) getSubscription(ws *websocket.Conn) (annotations.Subs
 	if err != nil {
 		return subMsg, err
 	}
-	e.logger.Trace.Printf("Subscription message: %s\n", rawData)
+	//e.logger.Trace.Printf("Subscription message: %s\n", rawData)
 
 	if err := json.Unmarshal(rawData, &subMsg); err != nil {
 		return subMsg, fmt.Errorf("Invalid subscription id: %s %s", rawData, err)
@@ -303,31 +306,57 @@ func (e *EventAnnoService) getSubscription(ws *websocket.Conn) (annotations.Subs
 	return subMsg, nil
 }
 
+func (e *EventAnnoService) SubcriptionURI() string {
+	return fmt.Sprintf("tcp://localhost:%d", e.pubSubPort)
+}
+
 func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
+	var (
+		err                error
+		clientSubscription annotations.Subscription
+		subscriber         *annotations.EventAnnoSubscriber
+	)
 
-	e.logger.Info.Printf("WebSocket client connected: %s\n", ws.Request().RemoteAddr)
+	e.wsClients++
+	e.logger.Info.Printf("WebSocket client connected: %s (clients: %d)\n",
+		ws.Request().RemoteAddr, e.wsClients)
 
-	clientSubscription, err := e.getSubscription(ws)
-	if err != nil {
+	if clientSubscription, err = e.getSubscription(ws); err != nil {
 		e.logger.Error.Printf("%s\n", err)
 		websocket.Message.Send(ws, fmt.Sprintf(`{"error": "%s"}`, err))
 		return
 	}
-	e.logger.Info.Printf("Subscription request: '%s'\n", clientSubscription)
+	e.logger.Info.Printf("Subscription (%s): '%s'\n", ws.Request().RemoteAddr, clientSubscription)
 
-	subAddr := fmt.Sprintf("tcp://localhost:%d", e.pubSubPort)
-	subscriber, err := annotations.NewEventAnnoSubscriber(subAddr, "SUB", clientSubscription.Types)
+	if subscriber, err = annotations.NewEventAnnoSubscriber(e.SubcriptionURI(),
+		"SUB", clientSubscription.Types); err != nil {
 
-	if err != nil {
 		e.logger.Error.Printf("Failed to start subscriber: %s", err)
 		websocket.Message.Send(ws,
 			fmt.Sprintf(`{"error": "Failed to start subscriber: %s"}`, err.Error()))
 		return
 	}
 
+	// Precautionary - might be able to remove.
 	defer subscriber.Close()
-	e.logger.Warning.Printf("Subscriber connected to: %s\n", subAddr)
+
+	e.logger.Warning.Printf("Subscriber connected to: %s\n", e.SubcriptionURI())
+	// Holder for client disconnect detection.
+	var tmpd string
 	for {
+		// Check for client disconnect.
+		if err = websocket.Message.Receive(ws, &tmpd); err != nil {
+
+			if err = subscriber.Close(); err != nil {
+				e.logger.Error.Printf("Could not close subscriber: %s\n", err)
+			}
+			e.wsClients--
+
+			e.logger.Warning.Printf("Client disconnected: %s (clients: %d)\n",
+				ws.Request().RemoteAddr, e.wsClients)
+			return
+		}
+
 		evtAnnoMsg, err := subscriber.Recieve()
 		if err != nil {
 			e.logger.Error.Printf("Failed to recieve subscription message: %s\n", err)
@@ -335,7 +364,6 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 		}
 
 		var annoCfm annotations.EventAnnotation
-		//var annoCfm annotations.EventAnnoConfirmation
 		err = json.Unmarshal([]byte(evtAnnoMsg.Data), &annoCfm)
 		if err != nil {
 			e.logger.Error.Printf("Decode failure: %s\n", evtAnnoMsg)

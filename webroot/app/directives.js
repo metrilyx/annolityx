@@ -72,15 +72,41 @@ angular.module('app.directives', [])
 		}
 	};
 }])
-.directive('annotationTypes', ['$location', function($location) {
+.directive('annotationTypes', ['$rootScope', '$location', 'EventAnnotationTypes', 
+	function($rootScope, $location, EventAnnotationTypes) {
+	
 	return {
-		restrict: 'A',
-		require: '?ngModel',
-		link: function(scope, elem, attrs, ctrl) {
-			if(!ctrl) return;
-		
-			scope.$watch(function(){return ctrl.$modelValue;}, function(newVal, oldVal) {
-				
+		restrict: 'EA',
+		templateUrl: 'partials/anno-types.html',
+		link: function(scope, elem, attrs) {
+
+			var indexAnnoTypesList = function(data) {
+				var o = {};
+				if(scope.annoFilter.types.length < 1) {
+					for(var i=0; i < data.length; i++) {
+						data[i].selected = true;
+						o[data[i].id] = data[i];
+					}
+				} else {
+					for(var i=0; i < data.length; i++) {
+						data[i].selected = false;
+						for(var t=0; t < scope.annoFilter.types.length; t++) {
+							
+							if(scope.annoFilter.types[t] == data[i].id) 
+								data[i].selected = true;
+						}
+						o[data[i].id] = data[i];
+					}
+				}
+				return o;
+			}
+
+			var onAnnoFilterChange = function(newVal, oldVal) {
+				if(!newVal) return;
+
+				/* Happens at times during initialization */
+				if ( angular.equals(newVal, oldVal) ) return;
+
 				if(Object.keys(oldVal).length==0 && Object.keys(newVal).length==0) {
 					return;
 				} else if(Object.keys(oldVal).length == 0 && Object.keys(newVal).length > 0) {
@@ -93,13 +119,26 @@ angular.module('app.directives', [])
 				}
 
 				var tmp = $location.search();
-				if(tmp.tags !== undefined && tmp['tags'] == "") {
-					delete tmp['tags'];
-				}
-
+				if(tmp.tags !== undefined && tmp['tags'] == "") delete tmp['tags'];
+				
 				tmp.types = newtypes.replace(/\,$/, '');
 				if(tmp.types != '') $location.search(tmp);
-			}, true);
+			}
+
+			var init = function() {
+				EventAnnotationTypes.list().then(function(data) {
+					// Apply to parent scope or changes will not reflect.
+					scope.$parent.annoTypesIndex = indexAnnoTypesList(data);
+				
+					/* Watch for filter changes */
+					scope.$watch(function() { return scope.annoTypesIndex; }, onAnnoFilterChange, true);
+				
+				}, function(err){
+					console.log(err);
+				});
+			}
+
+			init();
 		}
 	};
 }])

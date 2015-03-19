@@ -158,6 +158,10 @@ func (e *ElasticsearchDatastore) Query(annoQuery annotations.EventAnnotationQuer
 	return out, nil
 }
 
+func (e *ElasticsearchDatastore) Close() {
+	e.conn.CloseIndex(e.index)
+}
+
 func (e *ElasticsearchDatastore) getQuery(q annotations.EventAnnotationQuery, splitByType bool) ([]interface{}, error) {
 	timeQ, err := e.timeQuery(q.Start, q.End)
 	if err != nil {

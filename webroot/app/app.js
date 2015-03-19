@@ -73,12 +73,14 @@ app.filter('objectLength', function() {
 	};
 })
 .filter('datetimeFromEpoch', function() {
-	return function(epoch) {
+	/* Direct epoch conversion to Date without formatting */
+    return function(epoch) {
 		return (new Date(epoch*1000)).toString()
 	}
 }).
 filter('epochToFormat', function() {
-	var d = new Date(epoch*1000);
+	/* Convery epoch to a formatted string */
+    var d = new Date(epoch*1000);
 	
 	return padTime(d.getHours())+':'+padTime(d.getMinutes())+':'+padTime(d.getSeconds())+' '+
 		DAYS[d.getDay()]+' '+MONTHS[d.getMonth()]+' '+padTime(d.getDate())+', '+d.getUTCFullYear();
