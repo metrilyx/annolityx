@@ -35,7 +35,7 @@ angular.module("app.factories", [])
                 '; wasClean='+evt.wasClean);
             
             _wsock = null;
-            /*
+            
             if(retryCount < maxRetries) {
 
                 console.log('Reconnecting in 5sec...');
@@ -48,7 +48,6 @@ angular.module("app.factories", [])
             } else {
                 console.log('Max retries exceeded!');
             }
-            */
         }
 
         var msgErrback = function(evt) {

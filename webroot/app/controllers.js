@@ -79,7 +79,6 @@ angular.module('app.controllers', [])
 
 			if($scope.timeDimension.activeType == 'relative') {
 				console.log("Live events enabled.");
-				/* will actually re-connect if already connected */
 				webSockMgr.connect();
 			}
 
