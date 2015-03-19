@@ -180,7 +180,7 @@ td#message-search {
 }
 
 .anno-details-cont {
-	position:absolute;top:-15px;left:15px
+	position:absolute;top:-16px;left:25px
 }
 .anno-details-cont:hover {
 	z-index: 1;
@@ -225,17 +225,26 @@ td#message-search {
 	border-radius: 0 2px 2px 0; 
 	border-left: none;
 }
+
 tr>td.anno-table-cell:first-child {
-	transition: all 0.3s ease;
-	border-left: 0px solid transparent;
+	border-left: 1px solid transparent;
 }
+
 table.table>tbody>tr>td.anno-table-cell {
 	transition: all 0.35s ease;
 	vertical-align: middle;
 }
+
 tr:hover>td.anno-table-cell:first-child {
-	border-left-width: 7px;
+	border-left:1px solid #ddd;
 }
+tr:hover>td.anno-table-cell:last-child {
+	border-right:1px solid #ddd;
+}
+tr.annotation:hover {
+	background: #f7f7f7;
+}
+
 td.anno-table-cell.tags-cell {
 	width: 20%;
 	text-align: right;

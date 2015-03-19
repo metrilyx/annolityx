@@ -26,8 +26,8 @@
             </td>
         </tr>
         <tr class="annotation" ng-repeat="annotation in annoResults | filter: annoMessageSearch | orderBy:annoSortKey:annoSortReverse | limitTo:maxResults">
-            <td class="anno-table-cell" style="border-left-color:{{annoTypesIndex[annotation.type].metadata.color}}">
-                <div ng-click="toggleAnnoDetails(annotation._id)" style="cursor:pointer;padding-left:5px;">
+            <td class="anno-table-cell" ng-click="toggleAnnoDetails(annotation._id)" style="width:55px;">
+                <div style="cursor:pointer;padding-left:10px;">
                     <span class="glyphicon glyphicon-eye-open" style="color:{{annoTypesIndex[annotation.type].metadata.color}}"></span>
                 </div>
                 <div class="anno-detail" annotation-detail data-anno-id="{{annotation._id}}"></div>

@@ -15,7 +15,7 @@
         <div style="margin-left:24px;">
             <div ng-repeat="(annoTagK, annoTagV) in annoFilter.tags" class="input-group input-group-sm transparent dark anno-tag-kv-input">
                 <div class="input-group-addon" style="font-weight:bold">{{annoTagK}}</div>
-                <input type="text" class="form-control" ng-model="annoTagV">
+                <input type="text" class="form-control" ng-model="annoTagV" title="Edit tag value">
                 <div class="input-group-btn">
                     <button type="button" ng-click="removeAnnoTag(annoTagK)" class="btn btn-default">
                         <span class="glyphicon glyphicon-remove"></span>
