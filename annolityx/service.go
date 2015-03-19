@@ -322,8 +322,11 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 		ws.Request().RemoteAddr, e.wsClients)
 
 	if clientSubscription, err = e.getSubscription(ws); err != nil {
-		e.logger.Error.Printf("%s\n", err)
+		e.logger.Error.Printf("Failed to get subscriptions: %s\n", err)
+
 		websocket.Message.Send(ws, fmt.Sprintf(`{"error": "%s"}`, err))
+
+		e.wsClients--
 		return
 	}
 	e.logger.Info.Printf("Subscription (%s): '%s'\n", ws.Request().RemoteAddr, clientSubscription)
@@ -334,13 +337,14 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 		e.logger.Error.Printf("Failed to start subscriber: %s", err)
 		websocket.Message.Send(ws,
 			fmt.Sprintf(`{"error": "Failed to start subscriber: %s"}`, err.Error()))
+
+		e.wsClients--
 		return
 	}
 
 	// Precautionary - might be able to remove.
 	defer subscriber.Close()
 
-	e.logger.Warning.Printf("Subscriber connected to: %s\n", e.SubcriptionURI())
 	// Holder for client disconnect detection.
 	var tmpd string
 	for {
