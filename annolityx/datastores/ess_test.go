@@ -1,73 +1,77 @@
-package ess
+package datastores
 
 import (
 	"encoding/json"
 	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"github.com/metrilyx/annolityx/annolityx/config"
-	"github.com/metrilyx/annolityx/annolityx/datastores"
 	"path/filepath"
 	"testing"
 	"time"
 )
 
+/* test data */
 var (
-	testConfigFile, _  = filepath.Abs("../../../etc/annolityx/annolityx.toml")
-	testTypesDbFile, _ = filepath.Abs("../../../etc/annolityx/annotation-types.json")
-	testMappingFile, _ = filepath.Abs("../../../etc/annolityx/eventannotations-mapping.json")
+	testConfigFile, _  = filepath.Abs("../../etc/annolityx/annolityx.toml")
+	testTypesDbFile, _ = filepath.Abs("../../etc/annolityx/annotation-types.json")
+	testMappingFile, _ = filepath.Abs("../../etc/annolityx/eventannotations-mapping.json")
+
+	testEssDatastore = &ElasticsearchDatastore{}
+	testTypestore    = &JsonFileTypestore{}
+	testConfig       = &config.Config{}
 )
 
-var testEssDatastore *ElasticsearchDatastore = &ElasticsearchDatastore{}
-var testTypestore *datastores.JsonFileTypestore = &datastores.JsonFileTypestore{}
+/* mock data */
+var (
+	testType     = "deployment"
+	testAnnoMsg  = "Test deployment annotations"
+	testAnnoData = map[string]interface{}{
+		"host":       "foo.bar.org",
+		"datacenter": "dc1",
+		"contact":    "bar@foo.bar.org",
+	}
+	testQueryTags = map[string]string{
+		"class": "met",
+		"dc":    "dc1|dc2",
+	}
+	testTags = map[string]string{"dc": "dc1", "class": "met"}
 
-var testConfig *config.Config = &config.Config{}
+	testCartesianTags = map[string][]string{
+		"dc":    []string{"dc1", "dc2"},
+		"class": []string{"app", "met"},
+	}
 
-var testType string = "deployment"
-var testAnnoMsg string = "Test deployment annotations"
-var testAnnoData map[string]interface{} = map[string]interface{}{
-	"host":       "foo.bar.org",
-	"datacenter": "dc1",
-	"contact":    "bar@foo.bar.org",
-}
-var testQueryTags map[string]string = map[string]string{
-	"class": "met",
-	"dc":    "dc1|dc2",
-}
-var testTags = map[string]string{"dc": "dc1", "class": "met"}
+	testStart float64 = 1418081663
+	testEnd   float64 = -1
 
-var testCartesianTags = map[string][]string{
-	"dc":    []string{"dc1", "dc2"},
-	"class": []string{"app", "met"},
-}
+	testAnnoQuery = annotations.EventAnnotationQuery{
+		Types: []string{testType},
+		Tags:  testQueryTags,
+		Start: testStart,
+		End:   testEnd,
+	}
 
-var testStart float64 = 1418081663
-var testEnd float64 = -1
-
-var testAnnoQuery annotations.EventAnnotationQuery = annotations.EventAnnotationQuery{
-	Types: []string{testType},
-	Tags:  testQueryTags,
-	Start: testStart,
-	End:   testEnd,
-}
-
-var testAnno annotations.EventAnnotation = annotations.EventAnnotation{
-	Type:      testType,
-	Message:   testAnnoMsg,
-	Tags:      testTags,
-	Data:      testAnnoData,
-	Timestamp: float64(time.Now().UnixNano()) / 1000000000,
-}
+	testAnno = annotations.EventAnnotation{
+		Type:      testType,
+		Message:   testAnnoMsg,
+		Tags:      testTags,
+		Data:      testAnnoData,
+		Timestamp: float64(time.Now().UnixNano()) / 1000000000,
+	}
+)
 
 func Test_NewElasticsearchDatastore(t *testing.T) {
 	testConfig, err := config.LoadConfigFromFile(testConfigFile)
 	if err != nil {
 		t.Fatalf("%s", err)
 	}
+
 	testConfig.Datastore.MappingFile = testMappingFile
-	testEssDatastore, err = NewElasticsearchDatastore(testConfig)
-	if err != nil {
+
+	if testEssDatastore, err = NewElasticsearchDatastore(testConfig); err != nil {
 		t.Fatalf("%s", err)
 	}
-	t.Logf("NewElasticsearchDatastore(%s, %d, %s)", testConfig.Datastore.Host, testConfig.Datastore.Port, testConfig.Datastore.Index)
+	t.Logf("NewElasticsearchDatastore(%s, %d, %s)", testConfig.Datastore.Host,
+		testConfig.Datastore.Port, testConfig.Datastore.Index)
 }
 
 func Test_ElasticsearchDatastore_Privates(t *testing.T) {
@@ -149,7 +153,7 @@ func Test_ElasticsearchDatastore_Query(t *testing.T) {
 }
 
 func Test_ElasticsearchDatastore_ListTypes(t *testing.T) {
-	testTypestore, err := datastores.NewJsonFileTypestore(testTypesDbFile)
+	testTypestore, err := NewJsonFileTypestore(testTypesDbFile)
 	if err != nil {
 		t.Errorf("%s", err)
 		t.FailNow()

@@ -15,7 +15,7 @@ mapping_file = "/etc/annolityx/eventannotations-mapping.json"
 [http]
 port = 9898
 webroot = "/usr/local/share/annolityx/webroot"
-anno_endpoint = "/api/annotations"
-types_endpoint = "/api/types"
-websocket_endpoint = "/data"
+anno_endpoint = "/api/v1/annotations"
+types_endpoint = "/api/v1/types"
+websocket_endpoint = "/v1/data"
 websocket_hostname = "localhost"

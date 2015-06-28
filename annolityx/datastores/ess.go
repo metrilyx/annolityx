@@ -1,4 +1,4 @@
-package ess
+package datastores
 
 import (
 	"crypto/sha1"

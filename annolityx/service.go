@@ -8,7 +8,6 @@ import (
 	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"github.com/metrilyx/annolityx/annolityx/config"
 	"github.com/metrilyx/annolityx/annolityx/datastores"
-	"github.com/metrilyx/annolityx/annolityx/datastores/ess"
 	"github.com/metrilyx/annolityx/annolityx/parsers"
 	"io/ioutil"
 	"net/http"
@@ -68,7 +67,7 @@ func NewEventAnnoService(cfg *config.Config, logger *simplelog.Logger) (*EventAn
 	}
 	eas.Typestore = ts
 
-	ds, err := ess.NewElasticsearchDatastore(cfg)
+	ds, err := datastores.NewElasticsearchDatastore(cfg)
 	if err != nil {
 		return &eas, err
 	}
@@ -89,16 +88,16 @@ func (e *EventAnnoService) Start() error {
 	e.logger.Warning.Printf("HTTP root directory: %s\n", e.Webroot)
 	http.Handle("/", http.FileServer(http.Dir(e.Webroot)))
 
-	e.logger.Warning.Printf("Registering WebSocket Endpoint: %s\n", e.Endpoints.wsock)
+	e.logger.Warning.Printf("Registering websocket endpoint: %s\n", e.Endpoints.wsock)
 	http.Handle(e.Endpoints.wsock, websocket.Handler(e.wsHandler))
 
-	e.logger.Warning.Printf("Registering HTTP Endpoint: /api/config\n")
+	e.logger.Warning.Printf("Registering config endpoint: /api/config\n")
 	http.HandleFunc("/api/config", e.configHandler)
 
-	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.types)
+	e.logger.Warning.Printf("Registering types endpoint: %s\n", e.Endpoints.types)
 	http.HandleFunc(e.Endpoints.types, e.typesHandler)
 
-	e.logger.Warning.Printf("Registering HTTP Endpoint: %s\n", e.Endpoints.anno)
+	e.logger.Warning.Printf("Registering annotation ndpoint: %s\n", e.Endpoints.anno)
 	http.HandleFunc(e.Endpoints.anno, e.annotationHandler)
 
 	if strings.HasSuffix(e.Endpoints.anno, "/") {
