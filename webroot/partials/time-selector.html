@@ -1,9 +1,10 @@
 <table class="table" style="margin-bottom:0px;border:none;" time-dimension>
     <tr>
         <td>
-            <button type="button" class="btn btn-default btn-sm" ng-click="timeDimension.activeType = timeDimension.activeType==='relative' ?  'absolute' : 'relative'">
-                <span class="glyphicon glyphicon-time"></span>
-                <span>{{timeDimension.activeType}}</span>
+            <button type="button" class="btn btn-default" ng-click="timeDimension.activeType = timeDimension.activeType==='relative' ?  'absolute' : 'relative'" ng-switch="timeDimension.activeType">
+                <span ng-switch-when="absolute" class="glyphicon glyphicon-time"></span>
+                <span ng-switch-default class="glyphicon glyphicon-calendar"></span>
+                <!--<span>{{timeDimension.activeType}}</span>-->
             </button>
         </td>
         <td ng-switch="timeDimension.activeType" colspan="2">
