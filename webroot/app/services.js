@@ -1,62 +1,65 @@
 angular.module('app.services', [])
-.factory('Authenticator', ['$window', '$http', '$location', '$routeParams', function($window, $http, $location, $routeParams) {
+.factory('Authenticator', ['$window', '$http', '$location', '$routeParams', 
+    function($window, $http, $location, $routeParams) {
 
-	function _sessionIsAuthenticated() {
-		if($window.sessionStorage['credentials']) {
+    	function _sessionIsAuthenticated() {
+    		if($window.sessionStorage['credentials']) {
 
-			var creds = JSON.parse($window.sessionStorage['credentials']);
-			if(creds.username && creds.username !== "" && creds.password && creds.password !== "") {
-				// do custom checking here
-				return true
-			}
-		}
-		return false;
-	}
+    			var creds = JSON.parse($window.sessionStorage['credentials']);
+    			if(creds.username && creds.username !== "" && creds.password && creds.password !== "") {
+    				// do custom checking here
+    				return true
+    			}
+    		}
+    		return false;
+    	}
 
-	function _login(creds) {
-		// do actual auth here //
-		if(creds.username === "guest" && creds.password === "guest") {
-			$window.sessionStorage['credentials'] = JSON.stringify(creds);
-			return true;
-		}
-		return false;
-	}
+    	function _login(creds) {
+    		// do actual auth here //
+    		if(creds.username === "guest" && creds.password === "guest") {
+    			$window.sessionStorage['credentials'] = JSON.stringify(creds);
+    			return true;
+    		}
+    		return false;
+    	}
 
-	function _logout() {
-		var sStor = $window.sessionStorage;
-		if(sStor['credentials']) {
-			delete sStor['credentials'];
-		}
-		$location.url("/login");
-	}
+    	function _logout() {
+    		var sStor = $window.sessionStorage;
+    		if(sStor['credentials']) {
+    			delete sStor['credentials'];
+    		}
+    		$location.url("/login");
+    	}
 
-    function _checkAuthOrRedirect() {
-        if(!_sessionIsAuthenticated()) {
-            $location.url("/login?redirect="+$location.url());
-            return false;
-        } else {
-            return true;
+        function _checkAuthOrRedirect() {
+            if(!_sessionIsAuthenticated()) {
+                $location.url("/login?redirect="+$location.url());
+                return false;
+            } else {
+                return true;
+            }
         }
+
+    	var Authenticator = {
+            login                 : _login,
+            logout                : _logout,
+    		sessionIsAuthenticated: _sessionIsAuthenticated,
+    		checkAuthOrRedirect   : _checkAuthOrRedirect
+        };
+
+        return (Authenticator);
     }
-
-	var Authenticator = {
-        login                 : _login,
-        logout                : _logout,
-		sessionIsAuthenticated: _sessionIsAuthenticated,
-		checkAuthOrRedirect   : _checkAuthOrRedirect
-    };
-
-    return (Authenticator);
-}])
-.factory('EvtAnnoService', ['$resource', function($resource) {
-    return $resource('/api/annotations', {}, {
+])
+.factory('EvtAnnoService', ['$resource', 'AnnolityxConfig', function($resource, AnnolityxConfig) {
+    console.log(AnnolityxConfig);
+    return $resource(AnnolityxConfig.endpoints.annotation, {}, {
         search: {
             method: 'GET',
             isArray: true
         }
     });
 }])
-.factory('EventAnnotationTypes', ['$http', function($http) {
+.factory('EventAnnotationTypes', ['$http', 'AnnolityxConfig', function($http, AnnolityxConfig) {
     var _cache = null;
     
     return {
@@ -67,7 +70,7 @@ angular.module('app.services', [])
             } else {
                 $http({
                     method: 'GET',
-                    url: '/api/types',
+                    url: AnnolityxConfig.endpoints.types,
                 }).success(function(data) {
                     _cache = data;
                     _d.resolve(_cache);

@@ -151,8 +151,18 @@ func (e *EventAnnoService) handleConfigGetRequest(r *http.Request) (interface{},
 		}
 	}
 
-	return fmt.Sprintf(`{"websocket": { "url": "ws://%s:%d%s" }}`,
-		e.cfg.Http.WebsocketHostname, e.cfg.Http.Port, e.cfg.Http.WebsocketEndpoint), 200
+	var eConfig = map[string]interface{}{
+		"websocket": map[string]string{
+			"url": fmt.Sprintf(`ws://%s:%d%s`, e.cfg.Http.WebsocketHostname, e.cfg.Http.Port,
+				e.cfg.Http.WebsocketEndpoint),
+		},
+		"endpoints": map[string]string{
+			"types":      e.cfg.Http.TypesEndpoint,
+			"annotation": e.cfg.Http.AnnoEndpoint,
+		},
+	}
+
+	return eConfig, 200
 }
 
 func (e *EventAnnoService) configHandler(w http.ResponseWriter, r *http.Request) {
@@ -165,7 +175,7 @@ func (e *EventAnnoService) configHandler(w http.ResponseWriter, r *http.Request)
 	default:
 		resp = map[string]string{
 			"error": fmt.Sprintf("Method not supported: %s", r.Method)}
-		code = 501
+		code = 405
 		break
 	}
 	e.writeJsonResponse(w, r, resp, code)
