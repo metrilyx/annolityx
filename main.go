@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/euforia/simplelog"
 	"github.com/metrilyx/annolityx/annolityx"
 	"github.com/metrilyx/annolityx/annolityx/config"
-	"github.com/metrilyx/annolityx/annolityx/logging"
 	"os"
 )
 
@@ -21,15 +21,15 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		if PreReleaseVersion != "" {
-			fmt.Printf("%s-%s\n", Version, PreReleaseVersion)
+		if annolityx.PreReleaseVersion != "" {
+			fmt.Printf("%s-%s\n", annolityx.Version, annolityx.PreReleaseVersion)
 		} else {
-			fmt.Printf("%s\n", Version)
+			fmt.Printf("%s\n", annolityx.Version)
 		}
 		os.Exit(0)
 	}
 
-	logger := logging.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+	logger := simplelog.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
 	logger.SetLogLevel(*logLevel)
 
 	cfg, err := config.LoadConfigFromFile(*configFile)

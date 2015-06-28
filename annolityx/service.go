@@ -4,11 +4,11 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"encoding/json"
 	"fmt"
+	"github.com/euforia/simplelog"
 	"github.com/metrilyx/annolityx/annolityx/annotations"
 	"github.com/metrilyx/annolityx/annolityx/config"
 	"github.com/metrilyx/annolityx/annolityx/datastores"
 	"github.com/metrilyx/annolityx/annolityx/datastores/ess"
-	"github.com/metrilyx/annolityx/annolityx/logging"
 	"github.com/metrilyx/annolityx/annolityx/parsers"
 	"io/ioutil"
 	"net/http"
@@ -37,12 +37,12 @@ type EventAnnoService struct {
 
 	pubSubPort int64
 	cfg        *config.Config
-	logger     *logging.Logger
+	logger     *simplelog.Logger
 
 	wsClients int64
 }
 
-func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnnoService, error) {
+func NewEventAnnoService(cfg *config.Config, logger *simplelog.Logger) (*EventAnnoService, error) {
 	eas := EventAnnoService{
 		Webroot:    cfg.Http.Webroot,
 		ListenAddr: fmt.Sprintf(":%d", cfg.Http.Port),
@@ -51,7 +51,7 @@ func NewEventAnnoService(cfg *config.Config, logger *logging.Logger) (*EventAnno
 		wsClients:  0,
 	}
 	if logger == nil {
-		eas.logger = logging.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
+		eas.logger = simplelog.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
 	} else {
 		eas.logger = logger
 	}

@@ -65,7 +65,7 @@ BUILDROOT := $(BUILDDIR)/$(NAME)
 .test:
 	go test -v ./...
 
-.clean:
+clean:
 	rm -rf ./build
 
 install:

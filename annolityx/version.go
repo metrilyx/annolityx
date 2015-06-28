@@ -1,4 +1,4 @@
-package main
+package annolityx
 
 /*
  * The contents of this file have been taken from: https://github.com/hashicorp/serf/blob/master/version.go
@@ -9,7 +9,7 @@ package main
 var GitCommit string
 
 // The main version number that is being run at the moment.
-const Version = "0.0.1"
+const Version = "0.0.2"
 
 // A pre-release marker for the version. If this is "" (empty string)
 // then it means that it is a final release. Otherwise, this is a pre-release
