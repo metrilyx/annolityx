@@ -51,8 +51,8 @@ func (p *EventAnnoPublisher) Publish(pubId string, data interface{}) error {
 	if err != nil {
 		return err
 	}
-	p.zsock.Send(fmt.Sprintf("%s %s", strings.ToLower(pubId), jbytes), 0)
-	return nil
+	_, err = p.zsock.Send(fmt.Sprintf("%s %s", strings.ToLower(pubId), jbytes), 0)
+	return err
 }
 
 type EventAnnoSubMessage struct {
@@ -77,18 +77,24 @@ func NewEventAnnoSubscriber(connectUri string, typeStr string, subscriptionStrs 
 		return &s, err
 	}
 
-	sock, err = zmq.NewSocket(zType)
-	if err != nil {
+	if sock, err = zmq.NewSocket(zType); err != nil {
 		return &s, err
 	}
 
-	err = sock.Connect(connectUri)
-	if err != nil {
+	if err = sock.Connect(connectUri); err != nil {
 		return &s, err
 	}
+
+	//fmt.Printf("Subscribing: %s", subscriptionStrs)
 	// Set subscriptions
-	for _, v := range subscriptionStrs {
-		if err = sock.SetSubscribe(v); err != nil {
+	if len(subscriptionStrs) > 0 {
+		for _, v := range subscriptionStrs {
+			if err = sock.SetSubscribe(v); err != nil {
+				return &s, err
+			}
+		}
+	} else {
+		if err = sock.SetSubscribe(""); err != nil {
 			return &s, err
 		}
 	}
@@ -100,9 +106,8 @@ func (e *EventAnnoSubscriber) Close() error {
 	return e.zsock.Close()
 }
 
-func (e *EventAnnoSubscriber) Recieve() (EventAnnoSubMessage, error) {
+func (e *EventAnnoSubscriber) Receive() (EventAnnoSubMessage, error) {
 	evtAnnoMsg := EventAnnoSubMessage{}
-
 	msg, err := e.zsock.Recv(0)
 	if err != nil {
 		return evtAnnoMsg, err

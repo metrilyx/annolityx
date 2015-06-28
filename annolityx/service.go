@@ -1,7 +1,6 @@
 package annolityx
 
 import (
-	"code.google.com/p/go.net/websocket"
 	"encoding/json"
 	"fmt"
 	"github.com/euforia/simplelog"
@@ -83,7 +82,8 @@ func (e *EventAnnoService) Start() error {
 	http.Handle("/", http.FileServer(http.Dir(e.Webroot)))
 
 	e.logger.Warning.Printf("Registering websocket endpoint: %s\n", e.Endpoints.wsock)
-	http.Handle(e.Endpoints.wsock, websocket.Handler(e.wsHandler))
+	wsHdl := NewWebSockService(e.Endpoints.wsock, e.pubSubPort, e.logger)
+	wsHdl.RegisterHandle()
 
 	e.logger.Warning.Printf("Registering config endpoint: /api/config\n")
 	cfgHdl := NewConfigHandle("/api/config", e.cfg, e.logger)
@@ -191,10 +191,10 @@ func (e *EventAnnoService) handleAnnoPostPutRequest(r *http.Request) (interface{
 		return fmt.Sprintf(`{"error": "%s"}`, err.Error()), 401
 	}
 
-	if err := e.Publisher.Publish(resp.Type, resp); err != nil {
+	if err = e.Publisher.Publish(resp.Type, resp); err != nil {
 		e.logger.Warning.Printf("Failed to publish: %s\n", err)
 	} else {
-		e.logger.Trace.Printf("Published (%s): %s\n", resp.Type, resp)
+		e.logger.Trace.Printf("Published (%s): %#v\n", resp.Type, resp)
 	}
 	return resp, 200
 }
@@ -218,104 +218,6 @@ func (e *EventAnnoService) annotationHandler(w http.ResponseWriter, r *http.Requ
 	}
 	WriteJsonResponse(w, r, resp, code)
 	e.logger.Info.Printf("%s %d %s\n", r.Method, code, r.URL.RequestURI())
-}
-
-func (e *EventAnnoService) getSubscription(ws *websocket.Conn) (annotations.Subscription, error) {
-	var subMsg annotations.Subscription
-
-	var rawData []byte
-	err := websocket.Message.Receive(ws, &rawData)
-	if err != nil {
-		return subMsg, err
-	}
-	//e.logger.Trace.Printf("Subscription message: %s\n", rawData)
-
-	if err := json.Unmarshal(rawData, &subMsg); err != nil {
-		return subMsg, fmt.Errorf("Invalid subscription id: %s %s", rawData, err)
-	}
-
-	return subMsg, nil
-}
-
-func (e *EventAnnoService) SubcriptionURI() string {
-	return fmt.Sprintf("tcp://localhost:%d", e.pubSubPort)
-}
-
-func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
-	var (
-		err                error
-		clientSubscription annotations.Subscription
-		subscriber         *annotations.EventAnnoSubscriber
-	)
-
-	e.wsClients++
-	e.logger.Info.Printf("WebSocket client connected: %s (clients: %d)\n",
-		ws.Request().RemoteAddr, e.wsClients)
-
-	if clientSubscription, err = e.getSubscription(ws); err != nil {
-		e.logger.Error.Printf("Failed to get subscriptions: %s\n", err)
-
-		websocket.Message.Send(ws, fmt.Sprintf(`{"error": "%s"}`, err))
-
-		e.wsClients--
-		return
-	}
-	e.logger.Info.Printf("Subscription (%s): '%s'\n", ws.Request().RemoteAddr, clientSubscription)
-
-	if subscriber, err = annotations.NewEventAnnoSubscriber(e.SubcriptionURI(),
-		"SUB", clientSubscription.Types); err != nil {
-
-		e.logger.Error.Printf("Failed to start subscriber: %s", err)
-		websocket.Message.Send(ws,
-			fmt.Sprintf(`{"error": "Failed to start subscriber: %s"}`, err.Error()))
-
-		e.wsClients--
-		return
-	}
-
-	// Precautionary - might be able to remove.
-	defer subscriber.Close()
-
-	// Holder for client disconnect detection.
-	var tmpd string
-	for {
-		// Check for client disconnect.
-		if err = websocket.Message.Receive(ws, &tmpd); err != nil {
-
-			if err = subscriber.Close(); err != nil {
-				e.logger.Error.Printf("Could not close subscriber: %s\n", err)
-			}
-			e.wsClients--
-
-			e.logger.Warning.Printf("Client disconnected: %s (clients: %d)\n",
-				ws.Request().RemoteAddr, e.wsClients)
-			return
-		}
-
-		evtAnnoMsg, err := subscriber.Recieve()
-		if err != nil {
-			e.logger.Error.Printf("Failed to recieve subscription message: %s\n", err)
-			continue
-		}
-
-		var annoCfm annotations.EventAnnotation
-		err = json.Unmarshal([]byte(evtAnnoMsg.Data), &annoCfm)
-		if err != nil {
-			e.logger.Error.Printf("Decode failure: %s\n", evtAnnoMsg)
-			continue
-		}
-
-		if clientSubscription.IsSubscribedMessage(annoCfm) {
-			/* publish (send data over websocket) only if the timestamp is within the last minute */
-			if annoCfm.Timestamp > float64(time.Now().Unix()-60) {
-				websocket.Message.Send(ws, evtAnnoMsg.Data)
-			} else {
-				e.logger.Trace.Printf("Retro-active posting: %s\n", evtAnnoMsg.Data)
-			}
-		} else {
-			e.logger.Trace.Printf("Message not subscribed :%s", annoCfm)
-		}
-	}
 }
 
 func WriteJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, respCode int) {

@@ -24,15 +24,15 @@ angular.module('app.controllers', [])
 
 		$scope.annoMessageSearch = "";
 
-		var annoFilterMgr = new AnnoFilterManager($scope),
-			timeWinMgr 	  = new TimeWindowManager($scope),
-			webSockMgr    = new WebSocketManager(onWebsockData, $scope.annoFilter);
+		var webSockMgr,
+			annoFilterMgr = new AnnoFilterManager($scope),
+			timeWinMgr 	  = new TimeWindowManager($scope);
 		
 		var onWebsockData = function(wsData) {
 			$scope.$apply(function() {
 				$scope.annoResults.unshift(wsData);
 			});
-		}
+		}	
 
 		var getAnnoQuery = function() {
 			var query = $.extend({}, $scope.annoFilter, timeWinMgr.getTimeWindow($scope.timeDimension), true);
@@ -76,6 +76,7 @@ angular.module('app.controllers', [])
 		}
 
 		function _initialize() {
+			webSockMgr    = new WebSocketManager(onWebsockData, $scope.annoFilter);
 
 			if($scope.timeDimension.activeType == 'relative') {
 				console.log("Live events enabled.");
