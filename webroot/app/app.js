@@ -19,7 +19,8 @@ var app = angular.module('app', [
 	'app.directives',
 	'app.factories',
 	'app.controllers',
-	'app.services'
+	'app.services',
+    'annolityx.sidepanel'
 ]);
 
 (function() {

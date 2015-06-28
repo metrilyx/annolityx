@@ -85,7 +85,7 @@ ul {
 #root-container {
 	position:absolute;
 	top: 0px;
-	left: 20%;
+	left: 22%;
 	right: 0;
 	border-right:1px solid #aaa;
 	padding: 20px;
@@ -97,7 +97,7 @@ ul {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 20%;
+	width: 22%;
 	bottom: 0;
 	background: #505050;
 }

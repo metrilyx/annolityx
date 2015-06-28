@@ -10,7 +10,6 @@ angular.module('app.controllers', [])
 		console.log('called');
 
 		$scope.pageHeaderHtml    = "partials/page-header.html";
-		$scope.sidePanelHtml     = "partials/side-panel.html";
 		$scope.timeSelectorHtml  = "partials/time-selector.html";
 
 		$scope.tagKeyValueInput = "";
