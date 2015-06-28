@@ -11,7 +11,6 @@ import (
 	"github.com/metrilyx/annolityx/annolityx/parsers"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -42,6 +41,8 @@ type EventAnnoService struct {
 }
 
 func NewEventAnnoService(cfg *config.Config, logger *simplelog.Logger) (*EventAnnoService, error) {
+	var err error
+
 	eas := EventAnnoService{
 		Webroot:    cfg.Http.Webroot,
 		ListenAddr: fmt.Sprintf(":%d", cfg.Http.Port),
@@ -49,11 +50,8 @@ func NewEventAnnoService(cfg *config.Config, logger *simplelog.Logger) (*EventAn
 		cfg:        cfg,
 		wsClients:  0,
 	}
-	if logger == nil {
-		eas.logger = simplelog.NewLogger(os.Stdout, os.Stdout, os.Stdout, os.Stdout, os.Stderr)
-	} else {
-		eas.logger = logger
-	}
+
+	eas.logger = GetLogger(logger)
 
 	eas.Endpoints = ServiceEndpoints{
 		cfg.Http.WebsocketEndpoint,
@@ -61,17 +59,13 @@ func NewEventAnnoService(cfg *config.Config, logger *simplelog.Logger) (*EventAn
 		cfg.Http.TypesEndpoint,
 	}
 
-	ts, err := datastores.NewJsonFileTypestore(cfg.Typestore.DBFile)
-	if err != nil {
+	if eas.Typestore, err = datastores.NewJsonFileTypestore(cfg.Typestore.DBFile); err != nil {
 		return &eas, err
 	}
-	eas.Typestore = ts
 
-	ds, err := datastores.NewElasticsearchDatastore(cfg)
-	if err != nil {
+	if eas.Datastore, err = datastores.NewElasticsearchDatastore(cfg); err != nil {
 		return &eas, err
 	}
-	eas.Datastore = ds
 
 	pubAddr := fmt.Sprintf("tcp://*:%d", cfg.Publisher.Port)
 	pub, err := annotations.NewEventAnnoPublisher(pubAddr, cfg.Publisher.Type)
@@ -92,12 +86,14 @@ func (e *EventAnnoService) Start() error {
 	http.Handle(e.Endpoints.wsock, websocket.Handler(e.wsHandler))
 
 	e.logger.Warning.Printf("Registering config endpoint: /api/config\n")
-	http.HandleFunc("/api/config", e.configHandler)
+	cfgHdl := NewConfigHandle("/api/config", e.cfg, e.logger)
+	cfgHdl.RegisterHandle()
 
 	e.logger.Warning.Printf("Registering types endpoint: %s\n", e.Endpoints.types)
-	http.HandleFunc(e.Endpoints.types, e.typesHandler)
+	typeHdl := NewAnnoTypeHandle(e.Endpoints.types, e.Typestore, e.logger)
+	typeHdl.RegisterHandle()
 
-	e.logger.Warning.Printf("Registering annotation ndpoint: %s\n", e.Endpoints.anno)
+	e.logger.Warning.Printf("Registering annotation endpoint: %s\n", e.Endpoints.anno)
 	http.HandleFunc(e.Endpoints.anno, e.annotationHandler)
 
 	if strings.HasSuffix(e.Endpoints.anno, "/") {
@@ -138,47 +134,6 @@ func (e *EventAnnoService) checkAnnotateRequest(r *http.Request) (*annotations.E
 		annoReq.Timestamp = float64(time.Now().UnixNano()) / 1000000000
 	}
 	return &annoReq, nil
-}
-
-func (e *EventAnnoService) handleConfigGetRequest(r *http.Request) (interface{}, int) {
-	if e.cfg.Http.WebsocketHostname == "" {
-
-		var err error
-		e.cfg.Http.WebsocketHostname, err = os.Hostname()
-
-		if err != nil {
-			return err, 500
-		}
-	}
-
-	var eConfig = map[string]interface{}{
-		"websocket": map[string]string{
-			"url": fmt.Sprintf(`ws://%s:%d%s`, e.cfg.Http.WebsocketHostname, e.cfg.Http.Port,
-				e.cfg.Http.WebsocketEndpoint),
-		},
-		"endpoints": map[string]string{
-			"types":      e.cfg.Http.TypesEndpoint,
-			"annotation": e.cfg.Http.AnnoEndpoint,
-		},
-	}
-
-	return eConfig, 200
-}
-
-func (e *EventAnnoService) configHandler(w http.ResponseWriter, r *http.Request) {
-	var resp interface{}
-	var code int
-	switch r.Method {
-	case "GET":
-		resp, code = e.handleConfigGetRequest(r)
-		break
-	default:
-		resp = map[string]string{
-			"error": fmt.Sprintf("Method not supported: %s", r.Method)}
-		code = 405
-		break
-	}
-	e.writeJsonResponse(w, r, resp, code)
 }
 
 func (e *EventAnnoService) parseRequestPath(r *http.Request) []string {
@@ -261,41 +216,8 @@ func (e *EventAnnoService) annotationHandler(w http.ResponseWriter, r *http.Requ
 		code = 501
 		break
 	}
-	e.writeJsonResponse(w, r, resp, code)
-}
-
-func (e *EventAnnoService) handleAnnoTypesRequest(r *http.Request) (interface{}, int) {
-	var rslt interface{}
-	var err error
-	reqSubPath := strings.Replace(r.URL.Path, e.Endpoints.types, "", -1)
-	if reqSubPath == "" {
-		rslt = e.Typestore.ListTypes()
-	} else {
-		rslt, err = e.Typestore.GetType(reqSubPath)
-		if err != nil {
-			if strings.HasPrefix(err.Error(), "Type not found") {
-				return fmt.Sprintf(`{"error": "Not found: %s"}`, reqSubPath), 404
-			}
-			return fmt.Sprintf(`{"error": "%s"}`, err.Error()), 400
-		}
-	}
-	return rslt, 200
-}
-
-func (e *EventAnnoService) typesHandler(w http.ResponseWriter, r *http.Request) {
-	var resp interface{}
-	var code int
-	switch r.Method {
-	case "GET":
-		resp, code = e.handleAnnoTypesRequest(r)
-		break
-	default:
-		resp = map[string]string{
-			"error": fmt.Sprintf("Method not supported: %s", r.Method)}
-		code = 501
-		break
-	}
-	e.writeJsonResponse(w, r, resp, code)
+	WriteJsonResponse(w, r, resp, code)
+	e.logger.Info.Printf("%s %d %s\n", r.Method, code, r.URL.RequestURI())
 }
 
 func (e *EventAnnoService) getSubscription(ws *websocket.Conn) (annotations.Subscription, error) {
@@ -396,7 +318,7 @@ func (e *EventAnnoService) wsHandler(ws *websocket.Conn) {
 	}
 }
 
-func (e *EventAnnoService) writeJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, respCode int) {
+func WriteJsonResponse(w http.ResponseWriter, r *http.Request, data interface{}, respCode int) {
 	var b []byte
 	s, ok := data.(string)
 	if ok {
@@ -409,5 +331,11 @@ func (e *EventAnnoService) writeJsonResponse(w http.ResponseWriter, r *http.Requ
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(respCode)
 	w.Write(b)
-	e.logger.Info.Printf("%s %d %s\n", r.Method, respCode, r.URL.RequestURI())
+}
+
+func GetLogger(logger *simplelog.Logger) *simplelog.Logger {
+	if logger == nil {
+		return simplelog.NewStdLogger()
+	}
+	return logger
 }
